@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('restoration_events', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('artwork_id')->constrained('artworks');
+            $table->foreignId('artwork_id')
+                ->constrained('artworks')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->date('restoration_date');
             $table->string('organization', 255)->nullable();
             $table->longText('description');

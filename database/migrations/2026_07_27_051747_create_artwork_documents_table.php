@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('artwork_documents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('artwork_id')->constrained('artworks');
+            $table->foreignId('artwork_id')
+                ->constrained('artworks')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->string('title', 255);
             $table->string('file_name', 255);
             $table->text('description')->nullable();

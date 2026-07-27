@@ -13,8 +13,15 @@ return new class extends Migration
     {
         Schema::create('artwork_views', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('artwork_id')->constrained('artworks');
-            $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->foreignId('artwork_id')
+                ->constrained('artworks')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete()
+                ->cascadeOnUpdate();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->timestamp('created_at')->nullable()->useCurrent();

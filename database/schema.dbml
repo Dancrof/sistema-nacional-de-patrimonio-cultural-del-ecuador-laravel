@@ -118,7 +118,7 @@ artworks {
 	province_id bigint >* provinces.id
 	canton_id bigint >* cantons.id
 	parish_id bigint null >* parishes.id
-	created_by bigint >* users.id
+	created_by bigint null >* users.id
 	updated_by bigint null >* users.id
 	reading_time smallint null
 	code varchar(30) unique
@@ -222,7 +222,7 @@ artwork_tag {
 comments {
 	id integer pk increments unique
 	artwork_id bigint >* artworks.id
-	user_id bigint >* users.id
+	user_id bigint null >* users.id
 	parent_id bigint null >* comments.id
 	content text
 	is_approved boolean def(true)
@@ -291,7 +291,7 @@ artwork_views {
 
 audit_logs {
 	id integer pk increments unique
-	user_id bigint >* users.id
+	user_id bigint null >* users.id
 	action varchar(50)
 	table_name varchar(100)
 	record_id bigint

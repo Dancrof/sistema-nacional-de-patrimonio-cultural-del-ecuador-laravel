@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100)->unique();
             $table->string('slug', 120)->unique();
-            $table->enum('region', ['Costa', 'Sierra', 'Amazonia', 'Insular']);
+            $table->enum('region', ['Costa', 'Sierra', 'Amazonia', 'Insular'])->default('Costa');
             $table->text('description')->nullable();
             $table->string('cover_image', 255)->nullable();
             $table->decimal('latitude', 10, 8)->nullable();

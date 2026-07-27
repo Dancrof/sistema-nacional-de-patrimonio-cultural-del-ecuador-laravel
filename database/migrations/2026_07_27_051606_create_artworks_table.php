@@ -13,14 +13,42 @@ return new class extends Migration
     {
         Schema::create('artworks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->constrained('categories');
-            $table->foreignId('conservation_status_id')->nullable()->constrained('conservation_statuses');
-            $table->foreignId('artwork_type_id')->constrained('artwork_types');
-            $table->foreignId('province_id')->constrained('provinces');
-            $table->foreignId('canton_id')->constrained('cantons');
-            $table->foreignId('parish_id')->nullable()->constrained('parishes');
-            $table->foreignId('created_by')->constrained('users');
-            $table->foreignId('updated_by')->nullable()->constrained('users');
+            $table->foreignId('category_id')
+                ->constrained('categories')
+                ->restrictOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('conservation_status_id')
+                ->nullable()
+                ->constrained('conservation_statuses')
+                ->restrictOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('artwork_type_id')
+                ->constrained('artwork_types')
+                ->restrictOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('province_id')
+                ->constrained('provinces')
+                ->restrictOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('canton_id')
+                ->constrained('cantons')
+                ->restrictOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('parish_id')
+                ->nullable()
+                ->constrained('parishes')
+                ->nullOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('created_by')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('updated_by')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete()
+                ->cascadeOnUpdate();
             $table->unsignedSmallInteger('reading_time')->nullable();
             $table->string('code', 30)->unique();
             $table->string('title', 255);
@@ -43,7 +71,11 @@ return new class extends Migration
             $table->decimal('average_rating', 3, 2)->default(0.00);
             $table->boolean('is_featured')->default(false);
             $table->enum('status', ['borrador', 'pendiente', 'publicado', 'archivado'])->default('borrador');
-            $table->foreignId('published_by')->nullable()->constrained('users');
+            $table->foreignId('published_by')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete()
+                ->cascadeOnUpdate();
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
             $table->softDeletes();

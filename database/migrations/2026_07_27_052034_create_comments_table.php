@@ -13,9 +13,20 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('artwork_id')->constrained('artworks');
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('parent_id')->nullable()->constrained('comments');
+            $table->foreignId('artwork_id')
+                ->constrained('artworks')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('parent_id')
+                ->nullable()
+                ->constrained('comments')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->text('content');
             $table->boolean('is_approved')->default(true);
             $table->timestamps();

@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('parishes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('canton_id')->constrained('cantons');
+            $table->foreignId('canton_id')
+                ->constrained('cantons')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->string('name', 100);
             $table->string('slug', 120);
             $table->timestamps();

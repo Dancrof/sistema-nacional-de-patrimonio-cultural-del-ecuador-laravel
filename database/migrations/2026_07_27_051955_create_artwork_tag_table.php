@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('artwork_tag', function (Blueprint $table) {
-            $table->foreignId('artwork_id')->constrained('artworks');
-            $table->foreignId('tag_id')->constrained('tags');
+            $table->foreignId('artwork_id')
+                ->constrained('artworks')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('tag_id')
+                ->constrained('tags')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
 
             $table->primary(['artwork_id', 'tag_id']);
             $table->index('tag_id', 'idx_artwork_tag_tag');
