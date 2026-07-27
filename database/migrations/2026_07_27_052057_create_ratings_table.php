@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -29,6 +30,12 @@ return new class extends Migration
             $table->index('user_id', 'idx_ratings_user');
             $table->unique(['user_id', 'artwork_id'], 'uk_ratings_user_artwork');
         });
+
+        DB::statement("
+            ALTER TABLE ratings
+            ADD CONSTRAINT chk_rating
+            CHECK (rating BETWEEN 1 AND 5)
+        ");
     }
 
     /**

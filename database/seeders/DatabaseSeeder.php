@@ -16,15 +16,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(EcuadorLocationSeeder::class);
+        $this->call([
+            EcuadorLocationSeeder::class,
+            RoleSeeder::class,
+            CategorySeeder::class,
+        ]);
 
-        $adminRole = Role::query()->firstOrCreate(
-            ['slug' => 'admin'],
-            [
-                'name' => 'Administrador',
-                'description' => 'Acceso completo al sistema',
-            ]
-        );
+        $adminRole = Role::query()->where('slug', 'administrador')->firstOrFail();
 
         User::factory()->create([
             'role_id' => $adminRole->id,

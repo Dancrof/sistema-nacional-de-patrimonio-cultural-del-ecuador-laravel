@@ -26,4 +26,31 @@ class RoleFactory extends Factory
             'description' => fake()->optional()->sentence(),
         ];
     }
+
+    public function administrador(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'name' => 'Administrador',
+            'slug' => 'administrador',
+            'description' => 'Acceso completo al sistema',
+        ]);
+    }
+
+    public function curador(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'name' => 'Curador',
+            'slug' => 'curador',
+            'description' => 'Persona que sube y gestiona obras de arte',
+        ]);
+    }
+
+    public function visitante(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'name' => 'Visitante',
+            'slug' => 'visitante',
+            'description' => 'Usuario con acceso de consulta y participación limitada',
+        ]);
+    }
 }
