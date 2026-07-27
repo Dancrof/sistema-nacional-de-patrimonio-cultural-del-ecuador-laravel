@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('parishes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('canton_id')->constrained('cantons');
+            $table->string('name', 100);
+            $table->string('slug', 120);
             $table->timestamps();
+
+            $table->unique(['canton_id', 'name'], 'uk_parishes_cantons_name');
         });
     }
 

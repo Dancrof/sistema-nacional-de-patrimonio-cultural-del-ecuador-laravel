@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('artwork_views', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->foreignId('artwork_id')->constrained('artworks');
+            $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->timestamp('created_at')->nullable()->useCurrent();
+
+            $table->index('artwork_id', 'idx_artwork_views_artwork');
+            $table->index('user_id', 'idx_artwork_views_user');
         });
     }
 

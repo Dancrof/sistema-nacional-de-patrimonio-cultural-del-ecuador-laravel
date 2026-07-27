@@ -13,7 +13,15 @@ return new class extends Migration
     {
         Schema::create('artwork_videos', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('artwork_id')->constrained('artworks');
+            $table->string('title', 255);
+            $table->string('video_url', 255);
+            $table->string('thumbnail', 255)->nullable();
+            $table->time('duration')->nullable();
+            $table->string('provider', 20)->nullable();
             $table->timestamps();
+
+            $table->index('artwork_id', 'idx_artwork_videos_artwork');
         });
     }
 

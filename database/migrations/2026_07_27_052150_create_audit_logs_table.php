@@ -13,7 +13,21 @@ return new class extends Migration
     {
         Schema::create('audit_logs', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->foreignId('user_id')->constrained('users');
+            $table->string('action', 50);
+            $table->string('table_name', 100);
+            $table->unsignedBigInteger('record_id');
+            $table->json('old_values')->nullable();
+            $table->json('new_values')->nullable();
+            $table->text('description')->nullable();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->timestamp('created_at')->nullable();
+
+            $table->index('user_id', 'idx_activity_logs_user');
+            $table->index('action', 'idx_activity_logs_action');
+            $table->index(['table_name', 'record_id'], 'idx_audit_table_record');
+            $table->index('created_at', 'idx_audit_created_at');
         });
     }
 

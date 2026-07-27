@@ -13,7 +13,16 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('artwork_id')->constrained('artworks');
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('parent_id')->nullable()->constrained('comments');
+            $table->text('content');
+            $table->boolean('is_approved')->default(true);
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->index('artwork_id', 'idx_comments_artwork');
+            $table->index('parent_id', 'idx_comments_parent');
         });
     }
 

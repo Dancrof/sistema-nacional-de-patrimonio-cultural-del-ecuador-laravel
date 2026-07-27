@@ -13,7 +13,13 @@ return new class extends Migration
     {
         Schema::create('restoration_events', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('artwork_id')->constrained('artworks');
+            $table->date('restoration_date');
+            $table->string('organization', 255)->nullable();
+            $table->longText('description');
             $table->timestamps();
+
+            $table->index('artwork_id', 'idx_restoration_events_artwork');
         });
     }
 

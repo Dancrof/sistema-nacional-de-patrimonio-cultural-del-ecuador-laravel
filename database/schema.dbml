@@ -1,0 +1,308 @@
+users {
+	id integer pk increments unique
+	role_id bigint >* roles.id
+	first_name varchar(100)
+	last_name varchar(100)
+	username varchar(50) unique
+	email varchar(150) unique
+	password varchar(255)
+	avatar varchar(255) null
+	phone varchar(20) null
+	biography text null
+	email_verified_at timestamp null
+	last_login_at timestamp null
+	remember_token varchar(100) null
+	is_active boolean def(true)
+	created_at timestamp null
+	updated_at timestamp null
+	deleted_at timestamp null
+}
+
+roles {
+	id integer pk increments unique
+	name varchar(50) unique
+	slug varchar(60) unique
+	description varchar(255) null
+	created_at timestamp null
+	updated_at timestamp null
+	deleted_at timestamp null
+}
+
+provinces {
+	id integer pk increments unique
+	name varchar(100) unique
+	slug varchar(120) unique
+	region enum def('Costa','Sierra','Amazonia','Insular')
+	description text null
+	cover_image varchar(255) null
+	latitude decimal(10,8) null
+	longitude decimal(11,8) null
+	created_at timestamp null
+	updated_at timestamp null
+}
+
+cantons {
+	id integer pk increments unique
+	province_id bigint >* provinces.id
+	name varchar(100)
+	slug varchar(120)
+	created_at timestamp null
+	updated_at timestamp null
+	@index uk_cantons_province_name (province_id, name) unique
+}
+
+parishes {
+	id integer pk increments unique
+	canton_id bigint >* cantons.id
+	name varchar(100)
+	slug varchar(120)
+	created_at timestamp null
+	updated_at timestamp null
+	@index uk_parishes_cantons_name (canton_id, name) unique
+}
+
+categories {
+	id integer pk increments unique
+	name varchar(100) unique
+	slug varchar(120) unique
+	description text null
+	icon varchar(255) null
+	created_at timestamp null
+	updated_at timestamp null
+	deleted_at timestamp null
+}
+
+artwork_types {
+	id integer pk increments unique
+	name varchar(100) unique
+	slug varchar(120) unique
+	description text null
+	created_at timestamp null
+	updated_at timestamp null
+}
+
+conservation_statuses {
+	id integer pk increments unique
+	name varchar(50) unique
+	slug varchar(120) unique
+	description text null
+	created_at timestamp null
+	updated_at timestamp null
+}
+
+artists {
+	id integer pk increments unique
+	first_name varchar(100)
+	last_name varchar(100) null
+	full_name varchar(200)
+	slug varchar(255) unique
+	birth_date date null
+	birth_place varchar(150) null
+	death_date date null
+	is_deceased boolean def(false)
+	nationality varchar(100) null
+	biography longtext null
+	profile_image varchar(255) null
+	website varchar(255) null
+	created_at timestamp null
+	updated_at timestamp null
+	deleted_at timestamp null
+	@index idx_artists_full_name (full_name)
+}
+
+artworks {
+	id integer pk increments unique
+	category_id bigint >* categories.id
+	conservation_status_id bigint null >* conservation_statuses.id
+	artwork_type_id bigint >* artwork_types.id
+	province_id bigint >* provinces.id
+	canton_id bigint >* cantons.id
+	parish_id bigint null >* parishes.id
+	created_by bigint >* users.id
+	updated_by bigint null >* users.id
+	reading_time smallint null
+	code varchar(30) unique
+	title varchar(255)
+	seo_title varchar(255) null
+	slug varchar(255) unique
+	short_description text null
+	description longtext
+	language varchar(10) def('es')
+	seo_description varchar(255) null
+	historical_context longtext null
+	creation_year year null
+	dimensions varchar(100) null
+	weight decimal(10,2) null
+	address varchar(255) null
+	estimated_value decimal(12,2) null
+	accessibility_notes text null
+	latitude decimal(10,8) null
+	longitude decimal(11,8) null
+	visit_count int def(0)
+	average_rating decimal(3,2) def(0.00)
+	is_featured boolean def(false)
+	status enum def('borrador', 'pendiente', 'publicado', 'archivado')
+	published_by bigint null >* users.id
+	published_at timestamp null
+	created_at timestamp null
+	updated_at timestamp null
+	deleted_at timestamp null
+	@index idx_artworks_title (title)
+	@index idx_artworks_creation_year (creation_year)
+}
+
+artwork_artist {
+	artwork_id bigint pk *>* artworks.id
+	artist_id bigint pk *>* artists.id
+	@index idx_artwork_artist_artist (artist_id)
+}
+
+artwork_images {
+	id integer pk increments unique
+	artwork_id bigint >* artworks.id
+	photographer varchar(150) null
+	image_path varchar(255)
+	caption varchar(255) null
+	alt_text varchar(255) null
+	file_size bigint null
+	width integer null
+	height integer null
+	mime_type varchar(100) null
+	image_hash varchar(64) null
+	display_order smallint def(1)
+	is_cover boolean def(false)
+	created_at timestamp null
+	updated_at timestamp null
+	@index idx_artwork_images_artwork (artwork_id)
+}
+
+artwork_videos {
+	id integer pk increments unique
+	artwork_id bigint >* artworks.id
+	title varchar(255)
+	video_url varchar(255)
+	thumbnail varchar(255) null
+	duration time null
+	provider varchar(20) null
+	created_at timestamp null
+	updated_at timestamp null
+	@index idx_artwork_videos_artwork (artwork_id)
+}
+
+artwork_documents {
+	id integer pk increments unique
+	artwork_id bigint >* artworks.id
+	title varchar(255)
+	file_name varchar(255)
+	description text null
+	file_path varchar(255)
+	mime_type varchar(100)
+	file_size bigint
+	download_count int def(0)
+	created_at timestamp null
+	updated_at timestamp null
+	@index idx_artwork_documents_artwork (artwork_id)
+}
+
+tags {
+	id integer pk increments unique
+	name varchar(100) unique
+	slug varchar(120) unique
+	created_at timestamp null
+	updated_at timestamp null
+	deleted_at timestamp null
+}
+
+artwork_tag {
+	artwork_id bigint pk *>* artworks.id
+	tag_id bigint pk *>* tags.id
+	@index idx_artwork_tag_tag (tag_id)
+}
+
+comments {
+	id integer pk increments unique
+	artwork_id bigint >* artworks.id
+	user_id bigint >* users.id
+	parent_id bigint null >* comments.id
+	content text
+	is_approved boolean def(true)
+	created_at timestamp null
+	updated_at timestamp null
+	deleted_at timestamp null
+	@index idx_comments_artwork (artwork_id)
+	@index idx_comments_parent (parent_id)
+}
+
+favorites {
+	user_id bigint pk >* users.id
+	artwork_id bigint pk >* artworks.id
+	created_at timestamp null
+	@index idx_favorites_artwork (artwork_id)
+}
+
+ratings {
+	id integer pk increments unique
+	artwork_id bigint >* artworks.id
+	user_id bigint >* users.id
+	rating tinyint
+	review text null
+	created_at timestamp null
+	updated_at timestamp null
+	@index idx_ratings_artwork (artwork_id)
+	@index idx_ratings_user (user_id)
+	@index uk_ratings_user_artwork (user_id, artwork_id) unique
+}
+
+artwork_sources {
+	id integer pk increments unique
+	artwork_id bigint >* artworks.id
+	title varchar(255)
+	author varchar(255) null
+	isbn varchar(20) null
+	source_type enum def('libro', 'sitio web', 'articulo', 'revista', 'periodico', 'otros')
+	url varchar(500) null
+	published_at date null
+	created_at timestamp null
+	updated_at timestamp null
+	@index idx_artwork_sources_artwork (artwork_id)
+}
+
+restoration_events {
+	id integer pk increments unique
+	artwork_id bigint >* artworks.id
+	restoration_date date
+	organization varchar(255) null
+	description longtext
+	created_at timestamp null
+	updated_at timestamp null
+	@index idx_restoration_events_artwork (artwork_id)
+}
+
+artwork_views {
+	id integer pk increments unique
+	artwork_id bigint >* artworks.id
+	user_id bigint null >* users.id
+	ip_address varchar(45) null
+	user_agent text null
+	created_at timestamp null def(CURRENT_TIMESTAMP)
+	@index idx_artwork_views_artwork (artwork_id)
+	@index idx_artwork_views_user (user_id)
+}
+
+audit_logs {
+	id integer pk increments unique
+	user_id bigint >* users.id
+	action varchar(50)
+	table_name varchar(100)
+	record_id bigint
+	old_values json null
+	new_values json null
+	description text null
+	ip_address varchar(45) null
+	user_agent text null
+	created_at timestamp null
+	@index idx_activity_logs_user (user_id)
+	@index idx_activity_logs_action (action)
+	@index idx_audit_table_record (table_name, record_id)
+	@index idx_audit_created_at (created_at)
+}
