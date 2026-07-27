@@ -18,6 +18,23 @@ users {
 	deleted_at timestamp null
 }
 
+password_reset_tokens {
+	email varchar pk
+	token varchar
+	created_at timestamp null
+}
+
+sessions {
+	id varchar pk
+	user_id bigint null >* users.id
+	ip_address varchar(45) null
+	user_agent text null
+	payload longtext
+	last_activity integer
+	@index idx_sessions_user (user_id)
+	@index idx_sessions_last_activity (last_activity)
+}
+
 roles {
 	id integer pk increments unique
 	name varchar(50) unique
