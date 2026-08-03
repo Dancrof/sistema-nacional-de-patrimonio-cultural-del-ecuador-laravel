@@ -64,15 +64,15 @@ Implementar el sistema de autenticación y administración de usuarios.
 | Tarea | Prioridad |
 |--------|-----------|
 | CRUD Roles | 🔴 |
-| CRUD Usuarios | 🔴 |
-| Inicio de sesión | 🔴 |
+| CRUD Usuarios | 🔴 |  | ✅ |
+| Inicio de sesión | 🔴 |   | ✅ |
 | Cierre de sesión | 🔴 |
-| Recuperación de contraseña | 🔴 |
-| Recordar sesión | 🔴 |
-| Verificación de correo | 🟠 |
-| Cambio de contraseña | 🔴 |
-| Perfil del usuario | 🟠 |
-| Soft Deletes | 🟠 |
+| Recuperación de contraseña | 🔴 | | ✅ |
+| Recordar sesión | 🔴 |    | ✅ |
+| Verificación de correo | 🟠 | | ✅ |
+| Cambio de contraseña | 🔴 |   | ✅ |
+| Perfil del usuario | 🟠 | | ✅ |
+| Soft Deletes | 🟠 |   | ✅ |
 | Middleware por Roles | 🔴 |
 
 ### Entregable

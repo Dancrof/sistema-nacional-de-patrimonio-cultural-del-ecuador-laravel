@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a19deceaeccf33d7f194a7d7118f7465",
+    "content-hash": "bc3baa0268b1aa43241d45b9e96dd272",
     "packages": [
         {
             "name": "brick/math",
@@ -133,6 +133,73 @@
                 }
             ],
             "time": "2024-02-09T16:56:22+00:00"
+        },
+        {
+            "name": "colorlibhq/adminlte-laravel",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ColorlibHQ/adminlte-laravel",
+                "reference": "0807b182793818201b5cb222201145aaf4da88ca"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ColorlibHQ/adminlte-laravel/zipball/0807b182793818201b5cb222201145aaf4da88ca",
+                "reference": "0807b182793818201b5cb222201145aaf4da88ca",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^13.0",
+                "illuminate/view": "^13.0",
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.0",
+                "laravel/pint": "^1.29",
+                "orchestra/testbench": "^11.0",
+                "phpunit/phpunit": "^12.4 || ^13.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ColorlibHQ\\AdminLte\\AdminLteServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ColorlibHQ\\AdminLte\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Colorlib",
+                    "homepage": "https://colorlib.com"
+                }
+            ],
+            "description": "Official AdminLTE 4 integration for Laravel — Bootstrap 5.3, vanilla JS, Vite-ready.",
+            "homepage": "https://adminlte.io",
+            "keywords": [
+                "AdminLTE",
+                "admin",
+                "blade",
+                "bootstrap",
+                "bootstrap5",
+                "dashboard",
+                "laravel",
+                "template",
+                "vite"
+            ],
+            "support": {
+                "issues": "https://github.com/ColorlibHQ/adminlte-laravel/issues",
+                "source": "https://github.com/ColorlibHQ/adminlte-laravel"
+            },
+            "time": "2026-07-09T09:20:06+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -6453,6 +6520,67 @@
                 "source": "https://github.com/laravel/agent-detector"
             },
             "time": "2026-04-29T18:32:34+00:00"
+        },
+        {
+            "name": "laravel/breeze",
+            "version": "v2.4.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/breeze.git",
+                "reference": "4f20e7b2cc8d25daa85d8647241a89c8e0930305"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/breeze/zipball/4f20e7b2cc8d25daa85d8647241a89c8e0930305",
+                "reference": "4f20e7b2cc8d25daa85d8647241a89c8e0930305",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^11.0|^12.0|^13.0",
+                "illuminate/filesystem": "^11.0|^12.0|^13.0",
+                "illuminate/support": "^11.0|^12.0|^13.0",
+                "illuminate/validation": "^11.0|^12.0|^13.0",
+                "php": "^8.2.0",
+                "symfony/console": "^7.0|^8.0"
+            },
+            "require-dev": {
+                "laravel/framework": "^11.0|^12.0|^13.0",
+                "orchestra/testbench-core": "^9.0|^10.0|^11.0",
+                "phpstan/phpstan": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Breeze\\BreezeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Breeze\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Minimal Laravel authentication scaffolding with Blade and Tailwind.",
+            "keywords": [
+                "auth",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/breeze/issues",
+                "source": "https://github.com/laravel/breeze"
+            },
+            "time": "2026-05-14T16:54:25+00:00"
         },
         {
             "name": "laravel/pail",
