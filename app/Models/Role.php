@@ -2,21 +2,42 @@
 
 namespace App\Models;
 
-use Database\Factories\RoleFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 
-#[Fillable(['name', 'slug', 'description'])]
+#[Fillable([
+    'name',
+    'label',
+])]
 class Role extends Model
 {
-    /** @use HasFactory<RoleFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
-    public function users(): HasMany
+    protected $table = 'adminlte_roles';
+
+    /**
+     * Users that are assigned this role.
+     */
+    public function users(): BelongsToMany
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class, 'adminlte_role_user');
+    }
+
+    /**
+     * Permissions granted to this role.
+     */
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class, 'adminlte_permission_role');
+    }
+
+    /**
+     * Determine whether the role has the given permission.
+     */
+    public function hasPermission(string $name): bool
+    {
+        return $this->permissions()->where('name', $name)->exists();
     }
 }

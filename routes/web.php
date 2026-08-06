@@ -21,6 +21,28 @@ require __DIR__.'/auth.php';
 
 // AdminLTE scaffold routes
 Route::middleware(['web', 'auth'])->prefix('admin')->name('adminlte.')->group(function () {
+    // [adminlte:roles]
+    Route::get('roles', [\App\Http\Controllers\AdminLte\RoleController::class, 'index'])->name('roles.index');
+    Route::get('roles/create', [\App\Http\Controllers\AdminLte\RoleController::class, 'create'])->name('roles.create');
+    Route::post('roles', [\App\Http\Controllers\AdminLte\RoleController::class, 'store'])->name('roles.store');
+    Route::get('roles/{role}/edit', [\App\Http\Controllers\AdminLte\RoleController::class, 'edit'])->name('roles.edit');
+    Route::put('roles/{role}', [\App\Http\Controllers\AdminLte\RoleController::class, 'update'])->name('roles.update');
+    Route::delete('roles/{role}', [\App\Http\Controllers\AdminLte\RoleController::class, 'destroy'])->name('roles.destroy');
+
+    // [adminlte:users]
+    Route::get('users', [\App\Http\Controllers\AdminLte\UserController::class, 'index'])->name('users.index');
+    Route::get('users/create', [\App\Http\Controllers\AdminLte\UserController::class, 'create'])->name('users.create');
+    Route::post('users', [\App\Http\Controllers\AdminLte\UserController::class, 'store'])->name('users.store');
+    Route::get('users/{user}/edit', [\App\Http\Controllers\AdminLte\UserController::class, 'edit'])->name('users.edit');
+    Route::put('users/{user}', [\App\Http\Controllers\AdminLte\UserController::class, 'update'])->name('users.update');
+    Route::delete('users/{user}', [\App\Http\Controllers\AdminLte\UserController::class, 'destroy'])->name('users.destroy');
+
+    // [adminlte:notifications]
+    Route::get('notifications', [\App\Http\Controllers\AdminLte\NotificationController::class, 'index'])->name('notifications.index');
+    Route::put('notifications/read-all', [\App\Http\Controllers\AdminLte\NotificationController::class, 'readAll'])->name('notifications.read-all');
+    Route::put('notifications/{id}/read', [\App\Http\Controllers\AdminLte\NotificationController::class, 'read'])->name('notifications.read');
+    Route::delete('notifications/{id}', [\App\Http\Controllers\AdminLte\NotificationController::class, 'destroy'])->name('notifications.destroy');
+
     // [adminlte:mailbox]
     Route::get('mailbox', [\App\Http\Controllers\AdminLte\MailboxController::class, 'index'])->name('mailbox.index');
     Route::get('mailbox/compose', [\App\Http\Controllers\AdminLte\MailboxController::class, 'create'])->name('mailbox.create');

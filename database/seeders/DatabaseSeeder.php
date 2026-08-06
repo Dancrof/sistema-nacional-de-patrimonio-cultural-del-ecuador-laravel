@@ -18,16 +18,13 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             EcuadorLocationSeeder::class,
-            RoleSeeder::class,
             CategorySeeder::class,
         ]);
 
-        $adminRole = Role::query()->where('slug', 'administrador')->firstOrFail();
-
         User::factory()->create([
-            'role_id' => $adminRole->id,
             'first_name' => 'Test',
             'last_name' => 'User',
+            'name' => 'Test User',
             'username' => 'testuser',
             'email' => 'test@example.com',
         ]);

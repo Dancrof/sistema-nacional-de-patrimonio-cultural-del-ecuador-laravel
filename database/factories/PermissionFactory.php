@@ -2,15 +2,15 @@
 
 namespace Database\Factories;
 
-use App\Models\Role;
+use App\Models\Permission;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Role>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Permission>
  */
-class RoleFactory extends Factory
+class PermissionFactory extends Factory
 {
-    protected $model = Role::class;
+    protected $model = Permission::class;
 
     /**
      * @return array<string, mixed>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -42,7 +43,6 @@ class RegisteredUserController extends Controller
         ]);
 
         $user = User::create([
-            'role_id' => 3,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'name' => $request->first_name . ' ' . $request->last_name,
@@ -53,6 +53,8 @@ class RegisteredUserController extends Controller
             'phone' => $request->phone,
             'biography' => $request->biography,
         ]);
+
+        $user->assignRole('viewer');
 
         event(new Registered($user));
 
