@@ -25,7 +25,7 @@
 
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label" for="province_id">Provincia</label>
+                    <label class="form-label required" for="province_id">Provincia <span class="required-indicator" aria-label="Campo obligatorio">*</span></label>
                     <select name="province_id" id="province_id" class="form-select" required>
                         <option value="">Seleccione una provincia</option>
                         @foreach ($provinces as $province)

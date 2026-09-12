@@ -86,4 +86,89 @@ class ArtworkManagementTest extends TestCase
         $this->assertDatabaseHas('artwork_images', ['artwork_id' => 1, 'is_cover' => true]);
         $this->assertDatabaseCount('artwork_images', 2);
     }
+
+    public function test_admin_cannot_create_an_artwork_without_images(): void
+    {
+        $permission = Permission::firstOrCreate(['name' => 'manage-artworks'], ['label' => 'Manage Artworks']);
+        $role = Role::firstOrCreate(['name' => 'admin'], ['label' => 'Administrator']);
+        $role->permissions()->syncWithoutDetaching([$permission->id]);
+
+        $admin = User::factory()->create([
+            'first_name' => 'Admin',
+            'last_name' => 'Image',
+            'name' => 'Admin Image',
+            'username' => 'admin_image',
+            'email' => 'admin.image@example.com',
+        ]);
+        $admin->assignRole('admin');
+
+        $province = Province::create(['name' => 'Loja', 'slug' => 'loja', 'region' => 'Sierra']);
+        $canton = Canton::create(['province_id' => $province->id, 'name' => 'Loja', 'slug' => 'loja']);
+        $category = Category::create(['name' => 'Fotografía', 'slug' => 'fotografia', 'description' => 'Imágenes']);
+        $type = ArtworkType::create(['name' => 'Fotografía documental', 'slug' => 'fotografia-documental', 'description' => 'Fotografía']);
+
+        $response = $this->actingAs($admin)
+            ->from(route('adminlte.artworks.create'))
+            ->post(route('adminlte.artworks.store'), [
+                'category_id' => $category->id,
+                'artwork_type_id' => $type->id,
+                'province_id' => $province->id,
+                'canton_id' => $canton->id,
+                'code' => 'ART-IMG-001',
+                'title' => 'Paisaje sin imagen',
+                'description' => 'Debe fallar porque no se adjuntó ninguna imagen.',
+            ]);
+
+        $response->assertSessionHasErrors('images');
+        $this->assertDatabaseMissing('artworks', ['code' => 'ART-IMG-001']);
+    }
+
+    public function test_admin_can_create_an_artwork_with_related_videos(): void
+    {
+        $permission = Permission::firstOrCreate(['name' => 'manage-artworks'], ['label' => 'Manage Artworks']);
+        $role = Role::firstOrCreate(['name' => 'admin'], ['label' => 'Administrator']);
+        $role->permissions()->syncWithoutDetaching([$permission->id]);
+
+        $admin = User::factory()->create([
+            'first_name' => 'Admin',
+            'last_name' => 'Video',
+            'name' => 'Admin Video',
+            'username' => 'admin_video',
+            'email' => 'admin.video@example.com',
+        ]);
+        $admin->assignRole('admin');
+
+        $province = Province::create(['name' => 'Guayas', 'slug' => 'guayas', 'region' => 'Costa']);
+        $canton = Canton::create(['province_id' => $province->id, 'name' => 'Guayaquil', 'slug' => 'guayaquil']);
+        $category = Category::create(['name' => 'Escultura', 'slug' => 'escultura', 'description' => 'Obras de escultura']);
+        $type = ArtworkType::create(['name' => 'Escultura en metal', 'slug' => 'escultura-en-metal', 'description' => 'Escultura']);
+
+        Storage::fake('public');
+
+        $response = $this->actingAs($admin)
+            ->post(route('adminlte.artworks.store'), [
+                'category_id' => $category->id,
+                'artwork_type_id' => $type->id,
+                'province_id' => $province->id,
+                'canton_id' => $canton->id,
+                'code' => 'ART-VIDEO-001',
+                'title' => 'Monumento del río',
+                'description' => 'Escultura urbana acompañada de video documental.',
+                'images' => [File::image('video-cover.jpg')],
+                'videos' => [[
+                    'title' => 'Video documental',
+                    'video_url' => 'https://www.youtube.com/watch?v=abc123',
+                    'thumbnail' => 'https://img.youtube.com/vi/abc123/hqdefault.jpg',
+                    'duration' => '00:03:45',
+                    'provider' => 'youtube',
+                ]],
+            ]);
+
+        $response->assertRedirect(route('adminlte.artworks.index'));
+        $this->assertDatabaseHas('artwork_videos', [
+            'title' => 'Video documental',
+            'video_url' => 'https://www.youtube.com/watch?v=abc123',
+            'provider' => 'youtube',
+        ]);
+    }
 }

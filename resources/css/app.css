@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.form-label.required,
+.required-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.form-label.required .required-indicator,
+.required-label .required-indicator {
+    color: #dc3545;
+    font-weight: 700;
+    line-height: 1;
+}

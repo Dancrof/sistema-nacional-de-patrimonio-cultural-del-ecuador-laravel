@@ -64,8 +64,14 @@ class ArtworkController extends Controller
             'creation_year' => ['nullable', 'integer', 'min:1000', 'max:2100'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
-            'images' => ['nullable', 'array'],
+            'images' => ['required', 'array', 'min:1'],
             'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'videos' => ['nullable', 'array'],
+            'videos.*.title' => ['nullable', 'string', 'max:255'],
+            'videos.*.video_url' => ['nullable', 'url', 'max:255'],
+            'videos.*.thumbnail' => ['nullable', 'url', 'max:255'],
+            'videos.*.duration' => ['nullable', 'date_format:H:i:s'],
+            'videos.*.provider' => ['nullable', 'string', 'max:20'],
             'status' => ['nullable', 'in:borrador,pendiente,publicado,archivado'],
             'is_featured' => ['nullable', 'boolean'],
         ]);
@@ -98,6 +104,10 @@ class ArtworkController extends Controller
 
         if (! empty($data['images'])) {
             $this->storeArtworkImages($artwork, $data['images']);
+        }
+
+        if (! empty($data['videos'])) {
+            $this->storeArtworkVideos($artwork, $data['videos']);
         }
 
         return redirect()->route('adminlte.artworks.index')->with('status', 'Obra creada correctamente.');
@@ -144,6 +154,12 @@ class ArtworkController extends Controller
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'images' => ['nullable', 'array'],
             'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'videos' => ['nullable', 'array'],
+            'videos.*.title' => ['nullable', 'string', 'max:255'],
+            'videos.*.video_url' => ['nullable', 'url', 'max:255'],
+            'videos.*.thumbnail' => ['nullable', 'url', 'max:255'],
+            'videos.*.duration' => ['nullable', 'date_format:H:i:s'],
+            'videos.*.provider' => ['nullable', 'string', 'max:20'],
             'status' => ['nullable', 'in:borrador,pendiente,publicado,archivado'],
             'is_featured' => ['nullable', 'boolean'],
         ]);
@@ -187,6 +203,11 @@ class ArtworkController extends Controller
             $this->storeArtworkImages($artwork, $data['images']);
         }
 
+        if ($request->has('videos')) {
+            $artwork->videos()->delete();
+            $this->storeArtworkVideos($artwork, $data['videos']);
+        }
+
         return redirect()->route('adminlte.artworks.index')->with('status', 'Obra actualizada correctamente.');
     }
 
@@ -218,6 +239,43 @@ class ArtworkController extends Controller
                 'is_cover' => $index === 0,
             ]);
         }
+    }
+
+    private function storeArtworkVideos(Artwork $artwork, array $videos): void
+    {
+        foreach ($videos as $videoData) {
+            $title = trim((string) ($videoData['title'] ?? ''));
+            $videoUrl = trim((string) ($videoData['video_url'] ?? ''));
+
+            if ($title === '' && $videoUrl === '') {
+                continue;
+            }
+
+            $artwork->videos()->create([
+                'title' => $title !== '' ? $title : 'Video ' . ($artwork->videos()->count() + 1),
+                'video_url' => $videoUrl,
+                'thumbnail' => trim((string) ($videoData['thumbnail'] ?? '')) ?: null,
+                'duration' => $videoData['duration'] ?? null,
+                'provider' => trim((string) ($videoData['provider'] ?? '')) ?: $this->detectVideoProvider($videoUrl),
+            ]);
+        }
+    }
+
+    private function detectVideoProvider(string $videoUrl): string
+    {
+        if (str_contains($videoUrl, 'youtube.com') || str_contains($videoUrl, 'youtu.be')) {
+            return 'youtube';
+        }
+
+        if (str_contains($videoUrl, 'vimeo.com')) {
+            return 'vimeo';
+        }
+
+        if (str_contains($videoUrl, 'facebook.com')) {
+            return 'facebook';
+        }
+
+        return 'other';
     }
 
     private function normalizeCoordinateInputs(Request $request): void

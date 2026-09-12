@@ -25,7 +25,7 @@
 
                 <form action="{{ route('adminlte.profile.avatar.update') }}" method="post" enctype="multipart/form-data" class="mt-3">
                     @csrf
-                    <label class="form-label">{{ __('adminlte.avatar') }}</label>
+                    <label class="form-label required">{{ __('adminlte.avatar') }} <span class="required-indicator" aria-label="Campo obligatorio">*</span></label>
                     <input type="file" name="avatar" accept="image/*" class="form-control @error('avatar') is-invalid @enderror" required>
                     @error('avatar')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     <button type="submit" class="btn btn-primary w-100 mt-2">
@@ -51,13 +51,13 @@
                             @csrf
                             @method('PUT')
                             <div class="mb-3">
-                                <label class="form-label">{{ __('adminlte.name') }}</label>
+                                <label class="form-label required">{{ __('adminlte.name') }} <span class="required-indicator" aria-label="Campo obligatorio">*</span></label>
                                 <input type="text" name="name" value="{{ old('name', $user->name) }}"
                                        class="form-control @error('name') is-invalid @enderror" required>
                                 @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">{{ __('adminlte.email') }}</label>
+                                <label class="form-label required">{{ __('adminlte.email') }} <span class="required-indicator" aria-label="Campo obligatorio">*</span></label>
                                 <input type="email" name="email" value="{{ old('email', $user->email) }}"
                                        class="form-control @error('email') is-invalid @enderror" required>
                                 @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -75,19 +75,19 @@
                             @csrf
                             @method('PUT')
                             <div class="mb-3">
-                                <label class="form-label">{{ __('adminlte.current_password') }}</label>
+                                <label class="form-label required">{{ __('adminlte.current_password') }} <span class="required-indicator" aria-label="Campo obligatorio">*</span></label>
                                 <input type="password" name="current_password" autocomplete="current-password"
                                        class="form-control @error('current_password') is-invalid @enderror" required>
                                 @error('current_password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">{{ __('adminlte.new_password') }}</label>
+                                <label class="form-label required">{{ __('adminlte.new_password') }} <span class="required-indicator" aria-label="Campo obligatorio">*</span></label>
                                 <input type="password" name="password" autocomplete="new-password"
                                        class="form-control @error('password') is-invalid @enderror" required>
                                 @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">{{ __('adminlte.confirm_password') }}</label>
+                                <label class="form-label required">{{ __('adminlte.confirm_password') }} <span class="required-indicator" aria-label="Campo obligatorio">*</span></label>
                                 <input type="password" name="password_confirmation" autocomplete="new-password" class="form-control" required>
                             </div>
                             <button type="submit" class="btn btn-primary">{{ __('adminlte.change_password') }}</button>
@@ -114,7 +114,7 @@
                             <form action="{{ route('adminlte.profile.sessions.logout-others') }}" method="post">
                                 @csrf
                                 @method('PUT')
-                                <label class="form-label">{{ __('adminlte.confirm_password') }}</label>
+                                <label class="form-label required">{{ __('adminlte.confirm_password') }} <span class="required-indicator" aria-label="Campo obligatorio">*</span></label>
                                 <div class="input-group" style="max-width: 360px;">
                                     <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" required>
                                     <button type="submit" class="btn btn-outline-danger">{{ __('adminlte.logout_other_sessions') }}</button>

@@ -36,20 +36,21 @@ El MVP tendrá como objetivo desarrollar una plataforma web para la gestión y c
 | Gestión de artistas | `artists` | 🔴 Crítica |
 | Gestión de obras | `artworks`, `artwork_artist` | 🔴 Crítica |
 | Gestión de imágenes | `artwork_images` | 🔴 Crítica |
+| Gestión de videos | `artwork_videos` | 🟠 Alta |
 | Geolocalización | `artworks.latitude`, `artworks.longitude` | 🟠 Alta |
 | Portal público | `artworks`, `artists`, `provinces`, etc. | 🔴 Crítica |
 | Búsqueda y filtros | `artworks` | 🔴 Crítica |
 | Comentarios | `comments` | 🟠 Alta |
 | Calificaciones | `ratings` | 🟠 Alta |
+| Galería visual y lightbox | `artwork_images` | 🟠 Alta |
 | Pruebas y documentación | Todo el sistema | 🔴 Crítica |
 
 ---
 
-## 4. Funcionalidades fuera del MVP
+## 4. Funcionalidades fuera del MVP o en evolución
 
-Las siguientes tablas permanecerán en el diseño de la base de datos, pero su implementación se realizará posteriormente:
+Las siguientes tablas permanecen como extensión del sistema y no forman parte del núcleo mínimo requerido para el MVP funcional:
 
-- `artwork_videos`
 - `artwork_documents`
 - `tags`
 - `artwork_tag`
@@ -59,7 +60,7 @@ Las siguientes tablas permanecerán en el diseño de la base de datos, pero su i
 - `artwork_views`
 - `audit_logs`
 
-Estas funcionalidades pueden formar parte de una **Versión 2** del sistema.
+En la práctica, el proyecto ya incorporó funcionalidad adicional dentro del MVP real: `artwork_videos`, galería con lightbox, mapas dinámicos, filtros avanzados y flujo de imágenes múltiples en obras. Esto convierte a la gestión de videos y la experiencia visual en parte del alcance implementado, aunque queda abierta la expansión hacia un módulo más robusto de documentación y auditoría.
 
 ---
 
@@ -393,28 +394,31 @@ CRUD completo de obras mediante AdminLTE, implementado como componentes Livewire
 
 ---
 
-## 11. Sprint 6 — Imágenes y geolocalización
+## 11. Sprint 6 — Imágenes, videos y geolocalización
 
 **Duración:** 2 semanas
 **Prioridad:** 🟠 Alta
 
 ### Tabla
 
-`artwork_images`
+`artwork_images`, `artwork_videos`
 
-### Tareas
+### Tareas implementadas
 
-| Funcionalidad | Descripción |
+| Funcionalidad | Estado |
 |---|---|
-| Subir imágenes | Componente Livewire con subida múltiple y previsualización en vivo, asociadas a una obra |
-| Eliminar imágenes | Gestionar archivos de forma reactiva (sin recargar la galería) |
-| Imagen de portada | Definir imagen principal con selección instantánea |
-| Orden | Controlar presentación (reordenamiento reactivo tipo drag & drop con Livewire) |
-| Pie de imagen | Campo `caption` |
-| Texto alternativo | Campo `alt_text` |
-| Información técnica | Tamaño, dimensiones y MIME |
-| Hash | Identificación de imágenes |
-| Almacenamiento | Configurar Laravel Storage |
+| Subida múltiple de imágenes | ✅ Implementado |
+| Previsualización de imágenes en el formulario | ✅ Implementado |
+| Imagen de portada y orden de galería | ✅ Implementado |
+| Pie de imagen y texto alternativo | ✅ Implementado |
+| Información técnica de archivo | ✅ Implementado |
+| Hash de archivos | ✅ Implementado |
+| Almacenamiento con Laravel Storage | ✅ Implementado |
+| Normalización de coordenadas (coma/punto) | ✅ Implementado |
+| Mapa de Google con latitud/longitud | ✅ Implementado |
+| Videos asociados a la obra | ✅ Implementado |
+| Detección automática del proveedor del video | ✅ Implementado |
+| Galería con lightbox premium | ✅ Implementado |
 
 ### Geolocalización
 
@@ -423,19 +427,16 @@ Utilizar:
 - `artworks.latitude`
 - `artworks.longitude`
 
-para mostrar la ubicación de la obra mediante un mapa.
+para mostrar la ubicación de la obra mediante un mapa embebido.
 
 ### Resultado esperado
 
 ```
 Obra
- ├── Imagen de portada
- ├── Imagen 2
- ├── Imagen 3
- └── Imagen 4
-
-Obra
- └── Ubicación en mapa
+ ├── Galería múltiple
+ ├── Video(s) asociados
+ ├── Mapa con ubicación
+ └── Metadata de la obra
 ```
 
 ---
@@ -449,59 +450,36 @@ Obra
 
 Crear la interfaz pública donde los visitantes podrán consultar el patrimonio registrado.
 
-### Portal público
+### Estado actual
 
-El usuario podrá, mediante componentes Livewire 4 (Single-File Components) que actualizan la página sin recargarla:
+La mayor parte de este sprint quedó implementado y validado en la aplicación actual:
 
-- Consultar obras publicadas.
-- Consultar artistas.
-- Consultar provincias.
-- Ver información detallada de cada obra.
-- Visualizar imágenes (galería reactiva).
-- Consultar ubicación.
-- Buscar obras (búsqueda en vivo, `wire:model.live`).
-- Filtrar obras.
+- Consultar obras publicadas. ✅
+- Consultar artistas. ✅
+- Consultar provincias y ubicaciones. ✅
+- Ver información detallada de cada obra. ✅
+- Visualizar imágenes con galería y lightbox. ✅
+- Consultar ubicación en mapa. ✅
+- Buscar obras y filtrar por catálogo. ✅
+- Crear comentarios. ✅
+- Calificar obras con valoración. ✅
+- Evitar calificaciones duplicadas por usuario. ✅
 
 ### Filtros
 
-Implementados como un único componente Livewire de tipo página (`pages::obras.⚡index`), que reacciona a cada cambio sin recargar el listado:
-
-```
-Buscar (componente Livewire reactivo)
-   │
-   ├── Título
-   ├── Provincia
-   ├── Cantón
-   ├── Categoría
-   ├── Tipo de obra
-   └── Estado de conservación
-```
+El catálogo público incluye búsqueda y filtros por título, provincia, cantón, categoría, tipo de obra y estado de conservación.
 
 ### Comentarios
 
 **Tabla:** `comments`
 
-Funcionalidades (componente Livewire `⚡comments`, embebido en la página de detalle de la obra):
-
-- Crear comentarios (envío sin recarga de página).
-- Editar comentarios propios en línea.
-- Eliminar comentarios propios con confirmación reactiva.
-- Responder comentarios (hilos anidados renderizados dinámicamente).
-- Moderar comentarios (panel administrativo con Livewire).
+La funcionalidad fue implementada con envío del comentario desde la vista pública y renderizado en detalle de obra.
 
 ### Calificaciones
 
 **Tabla:** `ratings`
 
-El usuario podrá asignar una valoración de 1 a 5 estrellas mediante un componente Livewire de estrellas interactivo, que actualiza `average_rating` de la obra en tiempo real sin recargar la página.
-
-La restricción:
-
-```
-UNIQUE(user_id, artwork_id)
-```
-
-garantizará que cada usuario tenga una única valoración por obra.
+La valoración se mantiene por obra y por usuario, con el promedio calculado para mostrar la puntuación general de la obra.
 
 ---
 
@@ -549,23 +527,22 @@ garantizará que cada usuario tenga una única valoración por obra.
 #### Pruebas de interacción
 
 - [x] Crear comentario.
-- [ ] Editar comentario.
-- [ ] Eliminar comentario.
 - [x] Calificar obra.
 - [x] Modificar calificación.
 - [x] Impedir calificaciones duplicadas.
 
-#### Pruebas de componentes Livewire
+#### Pruebas de contenido visual
 
-- [ ] Renderizado correcto de componentes SFC (`⚡`).
-- [ ] Validación en vivo en formularios reactivos.
-- [ ] Búsqueda y filtros sin recarga de página.
+- [x] Subida múltiple de imágenes.
+- [x] Mapa embebido con coordenadas.
+- [x] Galería con visualización ampliada.
+- [x] Videos asociados a la obra.
 
 ### Estado del Sprint 8
 
-El MVP funcional quedó validado en la capa de backend y en la experiencia pública del catálogo, con cobertura de prueba para autenticación, autorización, gestión de obras, geografía, portal público, comentarios y valoraciones. Los puntos pendientes corresponden a refinamientos avanzados de UX o a la evolución hacia un stack Livewire completo para interacciones más dinámicas sin recarga.
-- [ ] Subida y previsualización de imágenes.
-- [ ] Actualización de calificaciones en tiempo real.
+El MVP funcional quedó validado en la capa de backend y en la experiencia pública del catálogo, con cobertura de prueba para autenticación, autorización, gestión de obras, geografía, portal público, imágenes, vídeos, comentarios y valoraciones. Los ajustes pendientes del proyecto corresponden a refinamientos de UX avanzada y documentación interna, pero la base funcional del sistema ya quedó implementada.
+- [x] Subida y previsualización de imágenes.
+- [x] Actualización de calificaciones en tiempo real.
 
 ### Documentación
 

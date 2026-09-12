@@ -117,8 +117,8 @@ return [
     |
     */
 
-    'footer_left' => 'Copyright &copy; '.date('Y').' <a href="#" class="text-decoration-none">Patrimonio Ecuador</a>. Todos los derechos reservados.',
-    'footer_right' => 'Panel administrativo',
+    'footer_left' => 'Copyright &copy; '.date('Y').' <a href="#" class="text-decoration-none">Sistema de Gestión del Patrimonio Cultural del Ecuador</a>. Todos los derechos reservados.',
+    'footer_right' => 'Versión 1.0.0',
     'preloader' => false,
     'control_sidebar' => false,
     'control_sidebar_theme' => 'dark',

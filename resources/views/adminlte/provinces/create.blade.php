@@ -28,7 +28,7 @@
                     <x-adminlte-input name="name" label="Nombre" value="{{ old('name') }}" required />
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label" for="region">Región</label>
+                    <label class="form-label required" for="region">Región <span class="required-indicator" aria-label="Campo obligatorio">*</span></label>
                     <select name="region" id="region" class="form-select" required>
                         <option value="">Seleccione una región</option>
                         <option value="Costa" @selected(old('region') === 'Costa')>Costa</option>

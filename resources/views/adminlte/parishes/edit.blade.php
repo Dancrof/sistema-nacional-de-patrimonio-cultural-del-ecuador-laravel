@@ -26,7 +26,7 @@
 
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label" for="canton_id">Cantón</label>
+                    <label class="form-label required" for="canton_id">Cantón <span class="required-indicator" aria-label="Campo obligatorio">*</span></label>
                     <select name="canton_id" id="canton_id" class="form-select" required>
                         @foreach ($cantons as $canton)
                             <option value="{{ $canton->id }}" @selected(old('canton_id', $parish->canton_id) == $canton->id)>{{ $canton->province?->name ?? 'Sin provincia' }} - {{ $canton->name }}</option>

@@ -1,6 +1,11 @@
 <div class="mb-3 {{ $fgroupClass }}">
     @isset($label)
-        <label for="{{ $id }}" class="form-label">{{ $label }}</label>
+        <label for="{{ $id }}" class="form-label{{ $attributes->has('required') ? ' required' : '' }}">
+            {{ $label }}
+            @if ($attributes->has('required'))
+                <span class="required-indicator" aria-label="Campo obligatorio">*</span>
+            @endif
+        </label>
     @endisset
     <input type="file"
            name="{{ $fieldName() }}"
