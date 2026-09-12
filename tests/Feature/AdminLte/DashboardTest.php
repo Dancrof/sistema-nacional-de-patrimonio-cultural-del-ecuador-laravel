@@ -21,7 +21,9 @@ class DashboardTest extends TestCase
         $this->actingAs(User::factory()->create())
             ->get(route('adminlte.dashboard'))
             ->assertOk()
-            // The users stat box reflects real data (at least the acting user).
-            ->assertSee(__('adminlte.users'));
+            ->assertSee('Obras')
+            ->assertSee('Artistas')
+            ->assertSee('Categorías')
+            ->assertSee('Provincias');
     }
 }

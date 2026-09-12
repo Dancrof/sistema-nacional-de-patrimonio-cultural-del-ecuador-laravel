@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\AdminLte;
 
 use App\Http\Controllers\Controller;
+use App\Models\Artist;
+use App\Models\Artwork;
+use App\Models\Category;
+use App\Models\Province;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -18,10 +22,10 @@ class DashboardController extends Controller
     {
         return view('adminlte.dashboard.index', [
             'stats' => [
-                'users' => $this->count('users'),
-                'projects' => $this->count('adminlte_projects'),
-                'unread_messages' => $this->countWhere('adminlte_messages', 'is_read', false),
-                'events' => $this->upcomingEvents(),
+                'artworks' => Artwork::count(),
+                'artists' => Artist::count(),
+                'categories' => Category::count(),
+                'provinces' => Province::count(),
             ],
             'projectsByStatus' => $this->projectsByStatus(),
             'recentActivity' => $this->recentActivity(),
@@ -59,11 +63,11 @@ class DashboardController extends Controller
      */
     protected function projectsByStatus(): array
     {
-        if (! Schema::hasTable('adminlte_projects')) {
+        if (! Schema::hasTable('artworks')) {
             return [];
         }
 
-        return DB::table('adminlte_projects')
+        return DB::table('artworks')
             ->select('status', DB::raw('count(*) as total'))
             ->groupBy('status')
             ->pluck('total', 'status')

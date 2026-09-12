@@ -95,8 +95,8 @@ class ProfileController extends Controller
 
         Auth::logout();
 
-        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-            Storage::disk('public')->delete($user->avatar);
+        if ($user->avatar && Storage::disk('public/images/profiles')->exists($user->avatar)) {
+            Storage::disk('public/images/profiles')->delete($user->avatar);
         }
 
         $user->delete();

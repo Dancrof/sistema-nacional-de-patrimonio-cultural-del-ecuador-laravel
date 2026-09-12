@@ -12,6 +12,15 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
+    private const PROJECT_PERMISSION_NAMES = [
+        'manage-users',
+        'manage-roles',
+        'manage-geography',
+        'manage-catalogs',
+        'manage-artists',
+        'manage-artworks',
+    ];
+
     public function index(): View
     {
         $this->authorizeManage();
@@ -25,7 +34,9 @@ class RoleController extends Controller
     {
         $this->authorizeManage();
 
-        $permissions = Permission::orderBy('name', 'asc')->get();
+        $permissions = Permission::whereIn('name', self::PROJECT_PERMISSION_NAMES)
+            ->orderBy('name', 'asc')
+            ->get();
 
         return view('adminlte.roles.create', compact('permissions'));
     }
@@ -56,7 +67,9 @@ class RoleController extends Controller
     {
         $this->authorizeManage();
 
-        $permissions = Permission::orderBy('name', 'asc')->get();
+        $permissions = Permission::whereIn('name', self::PROJECT_PERMISSION_NAMES)
+            ->orderBy('name', 'asc')
+            ->get();
         $role->load('permissions');
 
         return view('adminlte.roles.edit', compact('role', 'permissions'));

@@ -12,20 +12,19 @@ class AdminLteRbacSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            'view-dashboard' => 'View Dashboard',
             'manage-users' => 'Manage Users',
             'manage-roles' => 'Manage Roles',
+            'manage-geography' => 'Manage Geography',
+            'manage-catalogs' => 'Manage Catalogs',
             'manage-artists' => 'Manage Artists',
             'manage-artworks' => 'Manage Artworks',
-            'moderate-comments' => 'Moderate Comments',
-            'manage-catalogs' => 'Manage Catalogs',
-            'manage-geography' => 'Manage Geography',
-            'view-public-portal' => 'View Public Portal',
         ];
 
         foreach ($permissions as $name => $label) {
             Permission::firstOrCreate(['name' => $name], ['label' => $label]);
         }
+
+        Permission::whereNotIn('name', array_keys($permissions))->delete();
 
         $roles = [
             'admin' => [
@@ -39,28 +38,21 @@ class AdminLteRbacSeeder extends Seeder
             'gestor' => [
                 'label' => 'Gestor',
                 'permissions' => [
-                    'view-dashboard',
                     'manage-artists',
                     'manage-artworks',
                     'manage-catalogs',
                     'manage-geography',
-                    'view-public-portal',
                 ],
             ],
             'moderador' => [
                 'label' => 'Moderador',
                 'permissions' => [
-                    'view-dashboard',
-                    'moderate-comments',
-                    'view-public-portal',
+                    'manage-artworks',
                 ],
             ],
             'usuario' => [
                 'label' => 'Usuario',
-                'permissions' => [
-                    'view-dashboard',
-                    'view-public-portal',
-                ],
+                'permissions' => [],
             ],
         ];
 

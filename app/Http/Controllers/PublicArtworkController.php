@@ -14,7 +14,7 @@ class PublicArtworkController extends Controller
     public function index(Request $request): View
     {
         $query = Artwork::query()
-            ->with(['category', 'province', 'canton', 'artists'])
+            ->with(['category', 'province', 'canton', 'artists', 'artworkType'])
             ->where('status', 'publicado');
 
         if ($request->filled('search')) {
@@ -29,14 +29,35 @@ class PublicArtworkController extends Controller
             });
         }
 
+        if ($request->filled('province_id')) {
+            $query->where('province_id', $request->province_id);
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        if ($request->filled('artwork_type_id')) {
+            $query->where('artwork_type_id', $request->artwork_type_id);
+        }
+
+        if ($request->filled('conservation_status_id')) {
+            $query->where('conservation_status_id', $request->conservation_status_id);
+        }
+
         $artworks = $query->latest('published_at')->paginate(12)->withQueryString();
 
-        return view('public.artworks.index', compact('artworks'));
+        $provinces = \App\Models\Province::orderBy('name')->get();
+        $categories = \App\Models\Category::orderBy('name')->get();
+        $artworkTypes = \App\Models\ArtworkType::orderBy('name')->get();
+        $statuses = \App\Models\ConservationStatus::orderBy('name')->get();
+
+        return view('public.artworks.index', compact('artworks', 'provinces', 'categories', 'artworkTypes', 'statuses'));
     }
 
     public function show(string $slug): View
     {
-        $artwork = Artwork::with(['category', 'province', 'canton', 'parish', 'artworkType', 'conservationStatus', 'artists', 'comments.user', 'ratings.user'])
+        $artwork = Artwork::with(['category', 'province', 'canton', 'parish', 'artworkType', 'conservationStatus', 'artists', 'comments.user', 'ratings.user', 'images'])
             ->where('slug', $slug)
             ->where('status', 'publicado')
             ->firstOrFail();

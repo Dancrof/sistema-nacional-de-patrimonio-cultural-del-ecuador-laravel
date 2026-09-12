@@ -8,7 +8,14 @@
 </head>
 <body class="bg-slate-100 text-slate-800">
     <header class="bg-slate-900 text-white shadow">
-        <div class="mx-auto max-w-6xl px-4 py-6">
+        <div class="mx-auto max-w-6xl px-4 py-4">
+            <nav class="mb-4 flex items-center justify-between text-sm text-slate-200">
+                <div class="flex items-center gap-3">
+                    <a href="{{ route('public.artworks.index') }}" class="font-semibold text-white">Patrimonio</a>
+                    <a href="{{ route('public.artworks.index') }}" class="hover:text-white">Catálogo</a>
+                </div>
+                <a href="{{ route('login') ?? '/' }}" class="rounded-full border border-slate-600 px-3 py-1.5 hover:border-slate-400 hover:text-white">Acceso</a>
+            </nav>
             <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <p class="text-sm uppercase tracking-[0.25em] text-slate-300">Patrimonio ecuatoriano</p>
@@ -23,6 +30,38 @@
     </header>
 
     <main class="mx-auto max-w-6xl px-4 py-10">
+        <form method="GET" action="{{ route('public.artworks.index') }}" class="mb-8 grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:grid-cols-5">
+            <input type="hidden" name="search" value="{{ request('search') }}">
+            <select name="province_id" class="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="">Provincia</option>
+                @foreach ($provinces as $province)
+                    <option value="{{ $province->id }}" @selected((string) request('province_id') === (string) $province->id)>{{ $province->name }}</option>
+                @endforeach
+            </select>
+            <select name="category_id" class="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="">Categoría</option>
+                @foreach ($categories as $category)
+                    <option value="{{ $category->id }}" @selected((string) request('category_id') === (string) $category->id)>{{ $category->name }}</option>
+                @endforeach
+            </select>
+            <select name="artwork_type_id" class="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="">Tipo</option>
+                @foreach ($artworkTypes as $type)
+                    <option value="{{ $type->id }}" @selected((string) request('artwork_type_id') === (string) $type->id)>{{ $type->name }}</option>
+                @endforeach
+            </select>
+            <select name="conservation_status_id" class="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="">Estado</option>
+                @foreach ($statuses as $status)
+                    <option value="{{ $status->id }}" @selected((string) request('conservation_status_id') === (string) $status->id)>{{ $status->name }}</option>
+                @endforeach
+            </select>
+            <div class="flex gap-2">
+                <button type="submit" class="flex-1 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500">Filtrar</button>
+                <a href="{{ route('public.artworks.index') }}" class="flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100">Limpiar</a>
+            </div>
+        </form>
+
         @if ($artworks->count() === 0)
             <div class="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center">
                 <p class="text-lg font-medium text-slate-600">No se encontraron obras con los criterios actuales.</p>

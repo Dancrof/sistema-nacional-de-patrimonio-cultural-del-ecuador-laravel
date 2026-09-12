@@ -1,8 +1,8 @@
 @php
     $user = auth()->user();
     $name = $user->name ?? ($user->email ?? 'Guest');
-    $avatar = (config('adminlte.usermenu_image') && ! empty($user?->profile_photo_url))
-        ? $user->profile_photo_url
+    $avatar = (config('adminlte.usermenu_image') && ! empty($user?->avatar))
+        ? \Illuminate\Support\Facades\Storage::url($user->avatar)
         : asset('vendor/adminlte/img/user2-160x160.jpg');
     $memberSince = $user?->created_at ? $user->created_at->format('M. Y') : null;
 @endphp
@@ -30,7 +30,7 @@
         </li>
         {{-- Footer --}}
         <li class="user-footer">
-            <a href="{{ url(config('adminlte.usermenu_profile_url') ?: 'admin/profile') }}" class="btn btn-outline-secondary">
+            <a href="{{ url(config('adminlte.usermenu_profile_url') ?: '/profile') }}" class="btn btn-outline-secondary">
                 {{ __('adminlte.profile') }}
             </a>
             <a href="#" class="btn btn-outline-danger float-end"

@@ -10,10 +10,6 @@ Route::get('/obras/{slug}', [\App\Http\Controllers\PublicArtworkController::clas
 Route::post('/obras/{slug}/comments', [\App\Http\Controllers\PublicArtworkController::class, 'storeComment'])->name('public.artworks.comments.store');
 Route::post('/obras/{slug}/ratings', [\App\Http\Controllers\PublicArtworkController::class, 'storeRating'])->name('public.artworks.ratings.store');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -22,11 +18,14 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-// AdminLTE scaffold routes
-Route::middleware(['web', 'auth'])->prefix('admin')->name('adminlte.')->group(function () {
-    // [adminlte:dashboard]
+// Dashboard aliases for the default Laravel flow and the AdminLTE shell
+Route::middleware(['web', 'auth'])->group(function () {
     Route::get('dashboard', [\App\Http\Controllers\AdminLte\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('admin/dashboard', [\App\Http\Controllers\AdminLte\DashboardController::class, 'index'])->name('adminlte.dashboard');
+});
 
+// AdminLTE scaffold routes
+Route::middleware(['web', 'auth'])->name('adminlte.')->group(function () {
     // [adminlte:roles]
     Route::get('roles', [\App\Http\Controllers\AdminLte\RoleController::class, 'index'])->name('roles.index');
     Route::get('roles/create', [\App\Http\Controllers\AdminLte\RoleController::class, 'create'])->name('roles.create');

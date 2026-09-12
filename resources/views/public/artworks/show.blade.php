@@ -8,8 +8,14 @@
 </head>
 <body class="bg-slate-100 text-slate-800">
     <header class="bg-slate-900 text-white">
-        <div class="mx-auto max-w-5xl px-4 py-6">
-            <a href="{{ route('public.artworks.index') }}" class="text-sm font-medium text-indigo-300 hover:text-indigo-200">← Volver al catálogo</a>
+        <div class="mx-auto max-w-5xl px-4 py-5">
+            <nav class="flex items-center justify-between text-sm text-slate-200">
+                <div class="flex items-center gap-4">
+                    <a href="{{ route('public.artworks.index') }}" class="font-semibold text-white">Patrimonio</a>
+                    <a href="{{ route('public.artworks.index') }}" class="hover:text-white">Catálogo</a>
+                </div>
+                <a href="{{ route('public.artworks.index') }}" class="rounded-full border border-slate-600 px-3 py-1.5 hover:border-slate-400 hover:text-white">Volver</a>
+            </nav>
         </div>
     </header>
 
@@ -29,6 +35,22 @@
 
             <div class="grid gap-8 p-8 lg:grid-cols-[1.6fr_0.9fr]">
                 <div>
+                    @if ($artwork->images->isNotEmpty())
+                        <div class="mb-8 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                            <h2 class="text-lg font-semibold text-slate-800">Galería</h2>
+                            <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                                @foreach ($artwork->images as $image)
+                                    <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                                        <img src="{{ asset($image->image_path) }}" alt="{{ $image->alt_text ?? $image->caption ?? $artwork->title }}" class="h-48 w-full object-cover">
+                                        @if ($image->caption)
+                                            <p class="px-3 py-2 text-sm text-slate-600">{{ $image->caption }}</p>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
                     <p class="text-lg leading-8 text-slate-700">{{ $artwork->description }}</p>
 
                     @if ($artwork->artists->isNotEmpty())
@@ -39,6 +61,16 @@
                                     <li class="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">{{ $artist->full_name }}</li>
                                 @endforeach
                             </ul>
+                        </div>
+                    @endif
+
+                    @if ($artwork->latitude && $artwork->longitude)
+                        <div class="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                            <h2 class="text-lg font-semibold text-slate-800">Ubicación</h2>
+                            <div class="mt-3 rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700">
+                                <p>Latitud: {{ $artwork->latitude }}</p>
+                                <p>Longitud: {{ $artwork->longitude }}</p>
+                            </div>
                         </div>
                     @endif
 

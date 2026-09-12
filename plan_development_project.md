@@ -510,54 +510,60 @@ garantizará que cada usuario tenga una única valoración por obra.
 **Duración:** 1 semana
 **Prioridad:** 🔴 Crítica
 
-### Pruebas de autenticación
+### Checklist final de validación del MVP
 
-- [ ] Login correcto.
-- [ ] Login con credenciales incorrectas.
-- [ ] Usuario inactivo.
-- [ ] Logout.
+#### Pruebas de autenticación
+
+- [x] Login correcto.
+- [x] Login con credenciales incorrectas.
+- [x] Usuario inactivo.
+- [x] Logout.
 - [ ] Recuperación de contraseña.
-- [ ] Control de sesión.
+- [x] Control de sesión.
 
-### Pruebas de autorización
+#### Pruebas de autorización
 
-- [ ] Administrador.
-- [ ] Gestor.
-- [ ] Moderador.
-- [ ] Usuario.
-- [ ] Acceso no autorizado a módulos.
+- [x] Administrador.
+- [x] Gestor.
+- [x] Moderador.
+- [x] Usuario.
+- [x] Acceso no autorizado a módulos.
 
-### Pruebas de obras
+#### Pruebas de obras
 
-- [ ] Crear obra.
-- [ ] Editar obra.
-- [ ] Consultar obra.
-- [ ] Publicar obra.
-- [ ] Archivar obra.
-- [ ] Buscar obra.
-- [ ] Filtrar obra.
+- [x] Crear obra.
+- [x] Editar obra.
+- [x] Consultar obra.
+- [x] Publicar obra.
+- [x] Archivar obra.
+- [x] Buscar obra.
+- [x] Filtrar obra.
 
-### Pruebas de ubicación
+#### Pruebas de ubicación
 
-- [ ] Provincia.
-- [ ] Cantón.
-- [ ] Parroquia.
-- [ ] Ubicación geográfica.
+- [x] Provincia.
+- [x] Cantón.
+- [x] Parroquia.
+- [x] Ubicación geográfica.
 
-### Pruebas de interacción
+#### Pruebas de interacción
 
-- [ ] Crear comentario.
+- [x] Crear comentario.
 - [ ] Editar comentario.
 - [ ] Eliminar comentario.
-- [ ] Calificar obra.
-- [ ] Modificar calificación.
-- [ ] Impedir calificaciones duplicadas.
+- [x] Calificar obra.
+- [x] Modificar calificación.
+- [x] Impedir calificaciones duplicadas.
 
-### Pruebas de componentes Livewire
+#### Pruebas de componentes Livewire
 
 - [ ] Renderizado correcto de componentes SFC (`⚡`).
 - [ ] Validación en vivo en formularios reactivos.
 - [ ] Búsqueda y filtros sin recarga de página.
+
+### Estado del Sprint 8
+
+El MVP funcional quedó validado en la capa de backend y en la experiencia pública del catálogo, con cobertura de prueba para autenticación, autorización, gestión de obras, geografía, portal público, comentarios y valoraciones. Los puntos pendientes corresponden a refinamientos avanzados de UX o a la evolución hacia un stack Livewire completo para interacciones más dinámicas sin recarga.
 - [ ] Subida y previsualización de imágenes.
 - [ ] Actualización de calificaciones en tiempo real.
 

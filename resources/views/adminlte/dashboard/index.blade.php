@@ -7,41 +7,40 @@
 @stop
 
 @section('content')
-    {{-- Real, data-driven stat boxes --}}
     <div class="row">
-        @can('manage users')
-             <div class="col-lg-3 col-6">
-                <x-adminlte-small-box title="{{ $stats['users'] }}" text="{{ __('adminlte.users') }}"
-                theme="primary" icon="bi bi-people"
-                :url="\Illuminate\Support\Facades\Route::has('adminlte.users.index') ? route('adminlte.users.index') : null" />
-             </div>
-        @endcan
         <div class="col-lg-3 col-6">
-            <x-adminlte-small-box title="{{ $stats['projects'] }}" text="{{ __('adminlte.projects') }}"
-                theme="success" icon="bi bi-kanban"
-                :url="\Illuminate\Support\Facades\Route::has('adminlte.projects.index') ? route('adminlte.projects.index') : null" />
+            <x-adminlte-small-box title="{{ $stats['artworks'] ?? 0 }}" text="Obras"
+                theme="primary" icon="bi bi-palette2"
+                :url="\Illuminate\Support\Facades\Route::has('adminlte.artworks.index') ? route('adminlte.artworks.index') : null" />
         </div>
+
         <div class="col-lg-3 col-6">
-            <x-adminlte-small-box title="{{ $stats['unread_messages'] }}" text="{{ __('adminlte.messages') }}"
-                theme="warning" icon="bi bi-envelope"
-                :url="\Illuminate\Support\Facades\Route::has('adminlte.mailbox.index') ? route('adminlte.mailbox.index') : null" />
+            <x-adminlte-small-box title="{{ $stats['artists'] ?? 0 }}" text="Artistas"
+                theme="success" icon="bi bi-person-badge"
+                :url="\Illuminate\Support\Facades\Route::has('adminlte.artists.index') ? route('adminlte.artists.index') : null" />
         </div>
+
         <div class="col-lg-3 col-6">
-            <x-adminlte-small-box title="{{ $stats['events'] }}" text="{{ __('adminlte.events') }}"
-                theme="info" icon="bi bi-calendar-event"
-                :url="\Illuminate\Support\Facades\Route::has('adminlte.calendar.index') ? route('adminlte.calendar.index') : null" />
+            <x-adminlte-small-box title="{{ $stats['categories'] ?? 0 }}" text="Categorías"
+                theme="warning" icon="bi bi-tags"
+                :url="\Illuminate\Support\Facades\Route::has('adminlte.categories.index') ? route('adminlte.categories.index') : null" />
+        </div>
+
+        <div class="col-lg-3 col-6">
+            <x-adminlte-small-box title="{{ $stats['provinces'] ?? 0 }}" text="Provincias"
+                theme="info" icon="bi bi-map"
+                :url="\Illuminate\Support\Facades\Route::has('adminlte.provinces.index') ? route('adminlte.provinces.index') : null" />
         </div>
     </div>
 
     <div class="row">
-        {{-- Projects by status --}}
         <div class="col-md-6">
-            <x-adminlte-card icon="bi bi-bar-chart" title="{{ __('adminlte.projects') }}">
+            <x-adminlte-card icon="bi bi-bar-chart" title="Obras por estado">
                 @forelse ($projectsByStatus as $status => $total)
-                    @php($pct = $stats['projects'] > 0 ? round($total / $stats['projects'] * 100) : 0)
+                    @php($pct = ($stats['artworks'] ?? 0) > 0 ? round($total / ($stats['artworks'] ?? 1) * 100) : 0)
                     <div class="mb-3">
                         <div class="d-flex justify-content-between">
-                            <span>{{ __('adminlte.status_'.$status) }}</span>
+                            <span>{{ ucfirst(str_replace('-', ' ', $status)) }}</span>
                             <span class="text-secondary">{{ $total }}</span>
                         </div>
                         <div class="progress" role="progressbar" aria-valuenow="{{ $pct }}" aria-valuemin="0" aria-valuemax="100">
@@ -49,25 +48,24 @@
                         </div>
                     </div>
                 @empty
-                    <p class="text-secondary mb-0">{{ __('adminlte.no_projects') }}</p>
+                    <p class="text-secondary mb-0">Aún no hay obras registradas.</p>
                 @endforelse
             </x-adminlte-card>
         </div>
 
-        {{-- Recent activity --}}
         <div class="col-md-6">
-            <x-adminlte-card icon="bi bi-clock-history" title="{{ __('adminlte.activity') }}" bodyClass="p-0">
+            <x-adminlte-card icon="bi bi-clock-history" title="Actividad reciente" bodyClass="p-0">
                 <div class="list-group list-group-flush">
                     @forelse ($recentActivity as $entry)
                         <div class="list-group-item">
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-between gap-3">
                                 <span><span class="badge text-bg-secondary me-2">{{ $entry->event }}</span>{{ $entry->description }}</span>
-                                <small class="text-secondary">{{ \Illuminate\Support\Carbon::parse($entry->created_at)->diffForHumans() }}</small>
+                                <small class="text-secondary text-nowrap">{{ \Illuminate\Support\Carbon::parse($entry->created_at)->diffForHumans() }}</small>
                             </div>
-                            <small class="text-secondary">{{ $entry->user_name ?? __('adminlte.system') }}</small>
+                            <small class="text-secondary">{{ $entry->user_name ?? 'Sistema' }}</small>
                         </div>
                     @empty
-                        <div class="list-group-item text-secondary">{{ __('adminlte.no_recent_activity') }}</div>
+                        <div class="list-group-item text-secondary">No hay actividad reciente.</div>
                     @endforelse
                 </div>
             </x-adminlte-card>
