@@ -54,10 +54,10 @@ return [
     |
     */
 
-    'logo' => 'SIGPCE',
-    'logo_img' => 'public/logos/Escudo_de_la_Republica_del_Ecuador.png',
+    'logo' => 'Patrimonio Ecuador',
+    'logo_img' => '/storage/logos/Escudo_de_la_Republica_del_Ecuador.png',
     'logo_img_class' => 'brand-image opacity-75 shadow',
-    'logo_img_alt' => '',
+    'logo_img_alt' => 'Escudo_de_la_Republica_del_Ecuador.png',
 
     /*
     |--------------------------------------------------------------------------
@@ -68,7 +68,7 @@ return [
     'auth_logo' => [
         'enabled' => true,
         'img' => [
-            'path' => 'public/logos/Escudo_de_la_Republica_del_Ecuador.png',
+            'path' => '/storage/logos/Escudo_de_la_Republica_del_Ecuador.png',
             'alt' => 'Auth Logo',
             'class' => '',
             'width' => 50,

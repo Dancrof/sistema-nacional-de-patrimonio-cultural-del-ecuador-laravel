@@ -68,7 +68,11 @@
         </div>
 
         <x-slot name="footer">
-            {{ $provinces->links() }}
+            @if ($provinces->hasPages())
+                <div class="d-flex justify-content-end py-2 px-3">
+                    {{ $provinces->onEachSide(1)->links('pagination::bootstrap-5') }}
+                </div>
+            @endif
         </x-slot>
     </x-adminlte-card>
 @stop

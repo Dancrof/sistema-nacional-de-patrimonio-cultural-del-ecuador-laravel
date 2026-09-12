@@ -66,7 +66,11 @@
         </div>
 
         <x-slot name="footer">
-            {{ $cantons->links() }}
+            @if ($cantons->hasPages())
+                <div class="d-flex justify-content-end py-2 px-3">
+                    {{ $cantons->onEachSide(1)->links('pagination::bootstrap-5') }}
+                </div>
+            @endif
         </x-slot>
     </x-adminlte-card>
 @stop
