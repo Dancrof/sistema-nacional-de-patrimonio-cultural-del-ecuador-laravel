@@ -25,7 +25,7 @@ trait HasRoles
      */
     public function hasRole(string|array $role): bool
     {
-        $roles = (array) $role;
+        $roles = array_map(fn (string $name) => $this->normalizeRoleName($name), (array) $role);
 
         return $this->roles()->whereIn('name', $roles)->exists();
     }
@@ -45,11 +45,41 @@ trait HasRoles
      */
     public function assignRole(string $role): void
     {
-        $model = Role::where('name', $role)->first();
+        $resolvedRole = $this->resolveRole($role);
 
-        if ($model !== null) {
-            $this->roles()->syncWithoutDetaching($model);
+        if ($resolvedRole !== null) {
+            $this->roles()->syncWithoutDetaching($resolvedRole);
         }
+    }
+
+    protected function resolveRole(string $role): ?Role
+    {
+        $normalized = $this->normalizeRoleName($role);
+
+        return Role::whereIn('name', [$normalized, $role, $this->normalizeRoleAlias($role)])
+            ->first();
+    }
+
+    protected function normalizeRoleName(string $role): string
+    {
+        return match ($role) {
+            'administrador', 'admin' => 'admin',
+            'gestor', 'manager' => 'gestor',
+            'moderador', 'moderator' => 'moderador',
+            'usuario', 'user', 'viewer' => 'usuario',
+            default => strtolower($role),
+        };
+    }
+
+    protected function normalizeRoleAlias(string $role): string
+    {
+        return match ($this->normalizeRoleName($role)) {
+            'admin' => 'administrador',
+            'gestor' => 'manager',
+            'moderador' => 'moderator',
+            'usuario' => 'viewer',
+            default => $role,
+        };
     }
 
     /**

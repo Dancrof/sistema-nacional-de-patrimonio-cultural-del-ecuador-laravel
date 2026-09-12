@@ -36,16 +36,28 @@ class UserController extends Controller
         $this->authorizeManage();
 
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'first_name' => ['required', 'string', 'max:100'],
+            'last_name' => ['required', 'string', 'max:100'],
+            'username' => ['required', 'string', 'min:4', 'max:50', 'unique:users,username'],
+            'email' => ['required', 'string', 'email', 'max:150', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'biography' => ['nullable', 'string'],
+            'is_active' => ['nullable', 'boolean'],
             'roles' => ['nullable', 'array'],
             'roles.*' => ['integer', 'exists:adminlte_roles,id'],
         ]);
 
         $user = User::create([
-            'name' => $data['name'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'name' => trim($data['first_name'].' '.$data['last_name']),
+            'username' => $data['username'],
             'email' => $data['email'],
-            'password' => Hash::make(Str::random(32)),
+            'password' => Hash::make($data['password']),
+            'phone' => $data['phone'] ?? null,
+            'biography' => $data['biography'] ?? null,
+            'is_active' => $data['is_active'] ?? true,
         ]);
 
         $user->roles()->sync($data['roles'] ?? []);
@@ -69,15 +81,28 @@ class UserController extends Controller
         $this->authorizeManage();
 
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
+            'first_name' => ['required', 'string', 'max:100'],
+            'last_name' => ['required', 'string', 'max:100'],
+            'username' => ['required', 'string', 'min:4', 'max:50', 'unique:users,username,'.$user->id],
+            'email' => ['required', 'string', 'email', 'max:150', 'unique:users,email,'.$user->id],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'biography' => ['nullable', 'string'],
+            'is_active' => ['nullable', 'boolean'],
             'roles' => ['nullable', 'array'],
             'roles.*' => ['integer', 'exists:adminlte_roles,id'],
         ]);
 
         $user->update([
-            'name' => $data['name'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'name' => trim($data['first_name'].' '.$data['last_name']),
+            'username' => $data['username'],
             'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
+            'biography' => $data['biography'] ?? null,
+            'is_active' => $data['is_active'] ?? $user->is_active,
+            ...(isset($data['password']) && $data['password'] !== '' ? ['password' => Hash::make($data['password'])] : []),
         ]);
 
         $user->roles()->sync($data['roles'] ?? []);

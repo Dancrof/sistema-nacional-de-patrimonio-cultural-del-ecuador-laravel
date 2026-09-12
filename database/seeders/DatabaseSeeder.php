@@ -19,14 +19,19 @@ class DatabaseSeeder extends Seeder
         $this->call([
             EcuadorLocationSeeder::class,
             CategorySeeder::class,
+            ArtworkTypeSeeder::class,
+            ConservationStatusSeeder::class,
+            AdminLteRbacSeeder::class,
         ]);
 
-        User::factory()->create([
+        $user = User::factory()->create([
             'first_name' => 'Test',
             'last_name' => 'User',
             'name' => 'Test User',
             'username' => 'testuser',
             'email' => 'test@example.com',
         ]);
+
+        $user->assignRole('admin');
     }
 }

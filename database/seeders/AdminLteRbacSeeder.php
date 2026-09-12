@@ -13,14 +13,14 @@ class AdminLteRbacSeeder extends Seeder
     {
         $permissions = [
             'view-dashboard' => 'View Dashboard',
-            'manage-projects' => 'Manage Projects',
             'manage-users' => 'Manage Users',
             'manage-roles' => 'Manage Roles',
-            'manage-mailbox' => 'Manage Mailbox',
-            'manage-kanban' => 'Manage Kanban',
-            'manage-calendar' => 'Manage Calendar',
-            'manage-settings' => 'Manage Settings',
-            'view-reports' => 'View Reports',
+            'manage-artists' => 'Manage Artists',
+            'manage-artworks' => 'Manage Artworks',
+            'moderate-comments' => 'Moderate Comments',
+            'manage-catalogs' => 'Manage Catalogs',
+            'manage-geography' => 'Manage Geography',
+            'view-public-portal' => 'View Public Portal',
         ];
 
         foreach ($permissions as $name => $label) {
@@ -29,23 +29,37 @@ class AdminLteRbacSeeder extends Seeder
 
         $roles = [
             'admin' => [
-                'label' => 'Administrator',
+                'label' => 'Administrador',
                 'permissions' => array_keys($permissions),
             ],
-            'editor' => [
-                'label' => 'Editor',
+            'administrador' => [
+                'label' => 'Administrador',
+                'permissions' => array_keys($permissions),
+            ],
+            'gestor' => [
+                'label' => 'Gestor',
                 'permissions' => [
                     'view-dashboard',
-                    'manage-projects',
-                    'manage-kanban',
-                    'manage-calendar',
-                    'manage-mailbox',
+                    'manage-artists',
+                    'manage-artworks',
+                    'manage-catalogs',
+                    'manage-geography',
+                    'view-public-portal',
                 ],
             ],
-            'viewer' => [
-                'label' => 'Viewer',
+            'moderador' => [
+                'label' => 'Moderador',
                 'permissions' => [
                     'view-dashboard',
+                    'moderate-comments',
+                    'view-public-portal',
+                ],
+            ],
+            'usuario' => [
+                'label' => 'Usuario',
+                'permissions' => [
+                    'view-dashboard',
+                    'view-public-portal',
                 ],
             ],
         ];
@@ -62,7 +76,7 @@ class AdminLteRbacSeeder extends Seeder
         $user = User::first();
 
         if ($user !== null) {
-            $admin = Role::where('name', 'admin')->first();
+            $admin = Role::whereIn('name', ['admin', 'administrador'])->first();
 
             if ($admin !== null) {
                 $user->roles()->syncWithoutDetaching([$admin->id]);

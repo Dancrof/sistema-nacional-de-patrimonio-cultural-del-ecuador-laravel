@@ -54,7 +54,7 @@ class RegisteredUserController extends Controller
             'biography' => $request->biography,
         ]);
 
-        $user->assignRole('viewer');
+        $user->assignRole('usuario');
 
         event(new Registered($user));
 

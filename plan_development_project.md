@@ -1,380 +1,661 @@
-# Product Backlog del Proyecto
-## Sistema Web para la Gestión del Patrimonio Cultural del Ecuador
+# Plan de Desarrollo del MVP
 
-**Metodología:** Scrum
+## 1. Objetivo del MVP
 
-**Duración del Sprint:** 2 semanas (10 días laborables)
-
-**Duración Total:** 22 semanas
-
-### Niveles de prioridad
-
-| Prioridad | Descripción |
-|-----------|-------------|
-| 🔴 Crítica | Imprescindible para que el sistema funcione (MVP). |
-| 🟠 Alta | Funcionalidades principales del sistema. |
-| 🟡 Media | Mejoran significativamente la experiencia del usuario. |
-| 🟢 Baja | Funcionalidades complementarias y de optimización. |
+El MVP tendrá como objetivo desarrollar una plataforma web para la gestión y consulta de obras de patrimonio cultural del Ecuador, permitiendo a los administradores gestionar la información desde un panel administrativo desarrollado con Laravel + AdminLTE + Livewire, mientras que los usuarios podrán consultar las obras publicadas e interactuar con ellas mediante componentes reactivos sin necesidad de recargar la página.
 
 ---
 
-# Sprint 0 - Configuración del Proyecto
+## 2. Tecnologías
+
+| Tecnología | Uso |
+|---|---|
+| Laravel | Framework principal |
+| PHP | Lenguaje de programación |
+| MySQL | Sistema gestor de base de datos |
+| AdminLTE | Interfaz del panel administrativo |
+| **Livewire 4** | **Componentes reactivos (Single-File Components) para CRUDs, búsqueda, filtros, comentarios y calificaciones en vivo** |
+| Blade | Motor de plantillas |
+| Eloquent ORM | Acceso a la base de datos |
+| HTML5 / CSS3 / JavaScript | Interfaz web |
+| Git | Control de versiones |
+
+> **Nota sobre Livewire 4:** introduce los *Single-File Components* (componentes de archivo único), donde la lógica PHP y la vista Blade conviven en un mismo archivo con el prefijo `⚡` (por ejemplo, `resources/views/pages/post/⚡create.blade.php`). El MVP adoptará esta convención para los módulos administrativos y de interacción pública que se listan en cada sprint.
+
+---
+
+## 3. Módulos incluidos en el MVP
+
+| Módulo | Tablas | Prioridad |
+|---|---|---|
+| Configuración del proyecto | — | 🔴 Crítica |
+| Autenticación y autorización | `users`, `roles`, `sessions`, `password_reset_tokens` | 🔴 Crítica |
+| Gestión de usuarios | `users`, `roles` | 🔴 Crítica |
+| Gestión geográfica | `provinces`, `cantons`, `parishes` | 🔴 Crítica |
+| Catálogos | `categories`, `artwork_types`, `conservation_statuses` | 🔴 Crítica |
+| Gestión de artistas | `artists` | 🔴 Crítica |
+| Gestión de obras | `artworks`, `artwork_artist` | 🔴 Crítica |
+| Gestión de imágenes | `artwork_images` | 🔴 Crítica |
+| Geolocalización | `artworks.latitude`, `artworks.longitude` | 🟠 Alta |
+| Portal público | `artworks`, `artists`, `provinces`, etc. | 🔴 Crítica |
+| Búsqueda y filtros | `artworks` | 🔴 Crítica |
+| Comentarios | `comments` | 🟠 Alta |
+| Calificaciones | `ratings` | 🟠 Alta |
+| Pruebas y documentación | Todo el sistema | 🔴 Crítica |
+
+---
+
+## 4. Funcionalidades fuera del MVP
+
+Las siguientes tablas permanecerán en el diseño de la base de datos, pero su implementación se realizará posteriormente:
+
+- `artwork_videos`
+- `artwork_documents`
+- `tags`
+- `artwork_tag`
+- `favorites`
+- `artwork_sources`
+- `restoration_events`
+- `artwork_views`
+- `audit_logs`
+
+Estas funcionalidades pueden formar parte de una **Versión 2** del sistema.
+
+---
+
+## 5. Sprint 0 — Preparación del proyecto
 
 **Duración:** 1 semana
-
 **Prioridad:** 🔴 Crítica
 
-## Objetivo
+### Objetivo
 
-Preparar todo el entorno de desarrollo.
+Preparar el entorno de desarrollo y establecer la estructura inicial del proyecto Laravel.
 
 ### Tareas
 
-| Tarea | Prioridad |
-|--------|-----------|
-| Crear repositorio Git | 🔴 |
-| Configurar Laravel 12 | 🔴 |
-| Configurar Base de Datos MySQL | 🔴 |
-| Configurar FilamentPHP | 🔴 |
-| Configurar autenticación | 🔴 |
-| Configurar almacenamiento (Storage) | 🔴 |
-| Configurar control de versiones | 🔴 |
-| Configurar variables de entorno (.env) | 🔴 |
-| Configurar Docker (opcional) | 🟢 |
-| Crear documentación inicial | 🟡 |
+| Tarea | Descripción |
+|---|---|
+| Configuración de Laravel | Configurar el proyecto base |
+| Configuración de MySQL | Conectar Laravel con la BD |
+| Configuración del `.env` | Definir las variables del proyecto |
+| Instalación de AdminLTE | Configurar el panel administrativo |
+| **Instalación de Livewire 4** | **Configurar componentes reactivos y convención de Single-File Components (`⚡`)** |
+| Configuración de almacenamiento | Preparar almacenamiento de imágenes |
+| Configuración de Git | Crear repositorio y control de versiones |
+| Migraciones iniciales | Crear estructura inicial de la BD |
+| Configuración regional | Idioma español y zona horaria de Ecuador |
+| Estructura del proyecto | Organizar modelos, controladores, vistas, componentes Livewire y rutas |
 
-### Entregable
+### Resultado esperado
 
-Proyecto listo para comenzar el desarrollo.
+```
+Laravel
+   │
+   ├── MySQL
+   │
+   ├── AdminLTE
+   │      │
+   │      └── Panel administrativo
+   │
+   └── Livewire 4
+          │
+          └── Componentes reactivos (SFC)
+```
 
 ---
 
-# Sprint 1 - Usuarios y Seguridad
+## 6. Sprint 1 — Autenticación, autorización y usuarios
 
 **Duración:** 2 semanas
-
 **Prioridad:** 🔴 Crítica
 
-## Objetivo
+### Objetivo
 
-Implementar el sistema de autenticación y administración de usuarios.
+Implementar el acceso seguro al sistema utilizando Laravel para la autenticación y autorización y AdminLTE como interfaz administrativa.
+
+### Tablas involucradas
+
+```
+roles
+   │
+   └── users
+          │
+          └── sessions
+```
 
 ### Tareas
 
-| Tarea | Prioridad |
-|--------|-----------|
-| CRUD Roles | 🔴 |
-| CRUD Usuarios | 🔴 |  | ✅ |
-| Inicio de sesión | 🔴 |   | ✅ |
-| Cierre de sesión | 🔴 |
-| Recuperación de contraseña | 🔴 | | ✅ |
-| Recordar sesión | 🔴 |    | ✅ |
-| Verificación de correo | 🟠 | | ✅ |
-| Cambio de contraseña | 🔴 |   | ✅ |
-| Perfil del usuario | 🟠 | | ✅ |
-| Soft Deletes | 🟠 |   | ✅ |
-| Middleware por Roles | 🔴 |
+| Tarea | Descripción |
+|---|---|
+| Configurar modelo `User` | Adaptarlo a la estructura personalizada de `users` |
+| Implementar login | Autenticación mediante Laravel |
+| Implementar logout | Cierre de sesión |
+| Recuperación de contraseña | Utilizar `password_reset_tokens` |
+| Configurar sesiones | Utilizar la tabla `sessions` |
+| Crear modelo `Role` | Gestionar los roles |
+| Relacionar `User` y `Role` | Implementar relaciones Eloquent |
+| Crear middleware de roles | Restringir acceso según el rol |
+| Crear roles iniciales | Administrador, gestor, moderador y usuario |
+| Crear dashboard | Panel administrativo con AdminLTE |
+| **CRUD de usuarios con Livewire** | **Componente `⚡index`, `⚡create`, `⚡edit` con tabla reactiva, búsqueda y paginación sin recarga** |
+| Gestión de perfil | Datos personales y avatar (formulario reactivo con Livewire, previsualización de avatar en vivo) |
+| Registrar último acceso | Utilizar `last_login_at` |
 
-### Entregable
+### Roles iniciales
 
-Sistema de autenticación completamente funcional.
+| Rol | Función |
+|---|---|
+| Administrador | Administración completa del sistema |
+| Gestor | Gestión de obras, artistas y catálogos |
+| Moderador | Moderación de comentarios |
+| Usuario | Consulta e interacción con las obras |
+
+### Resultado esperado
+
+```
+Usuario
+   ↓
+Login
+   ↓
+Laravel Auth
+   ↓
+Validación de credenciales
+   ↓
+Verificación de is_active
+   ↓
+Obtención del rol
+   ↓
+Autorización
+   ↓
+AdminLTE
+```
 
 ---
 
-# Sprint 2 - Catálogos Generales
+## 7. Sprint 2 — Gestión geográfica
 
 **Duración:** 2 semanas
-
 **Prioridad:** 🔴 Crítica
 
-## Objetivo
+### Objetivo
 
-Crear los catálogos base del sistema.
+Implementar la estructura geográfica del Ecuador para asociar cada obra con su ubicación.
+
+### Tablas
+
+```
+provinces
+    │
+    └── cantons
+           │
+           └── parishes
+```
 
 ### Tareas
 
-| Tarea | Prioridad |
-|--------|-----------|
-| CRUD Provincias | 🔴 |
-| CRUD Cantones | 🔴 |
-| CRUD Parroquias | 🔴 |
-| CRUD Categorías | 🔴 |
-| CRUD Tipos de Obra | 🔴 |
-| CRUD Estados de Conservación | 🔴 |
-| Slugs automáticos | 🟠 |
-| Validaciones | 🔴 |
-| Soft Delete | 🟠 |
+| Tarea | Descripción |
+|---|---|
+| Modelo `Province` | Crear modelo y relaciones |
+| Modelo `Canton` | Crear modelo y relaciones |
+| Modelo `Parish` | Crear modelo y relaciones |
+| CRUD de provincias | Administración mediante AdminLTE |
+| CRUD de cantones | Administración mediante AdminLTE |
+| CRUD de parroquias | Administración mediante AdminLTE |
+| Seeders | Cargar información geográfica |
+| Validaciones | Evitar duplicados |
+| **Select dependiente con Livewire** | **Componente reactivo Provincia → Cantón → Parroquia, sin JavaScript manual ni recarga de página** |
 
-### Entregable
+### Resultado esperado
 
-Todos los catálogos implementados.
+Al registrar una obra se podrá seleccionar:
+
+```
+Provincia
+    ↓
+Cantón
+    ↓
+Parroquia
+```
 
 ---
 
-# Sprint 3 - Gestión de Artistas
+## 8. Sprint 3 — Catálogos del patrimonio
 
 **Duración:** 2 semanas
+**Prioridad:** 🔴 Crítica
 
-**Prioridad:** 🟠 Alta
+### Objetivo
 
-## Objetivo
+Crear los catálogos utilizados para clasificar las obras.
 
-Administrar la información de los artistas.
+### Tablas
+
+- `categories`
+- `artwork_types`
+- `conservation_statuses`
 
 ### Tareas
 
-| Tarea | Prioridad |
-|--------|-----------|
-| CRUD Artistas | 🟠 |
-| Fotografía del artista | 🟠 |
-| Biografía | 🟠 |
-| Sitio web | 🟡 |
-| Nacionalidad | 🟠 |
-| Buscador | 🟠 |
-| Soft Delete | 🟠 |
+| Tarea | Descripción |
+|---|---|
+| CRUD de categorías | Crear, editar, consultar y eliminar (componente Livewire `⚡index`) |
+| CRUD de tipos de obra | Administrar tipos (componente Livewire) |
+| CRUD de estados de conservación | Administrar estados (componente Livewire) |
+| Seeders | Registrar información inicial |
+| Validaciones | Controlar nombres y slugs (validación en vivo con Livewire) |
+| Relaciones | Relacionar catálogos con obras |
+| Interfaz AdminLTE | Crear las vistas administrativas |
 
-### Entregable
+### Resultado esperado
 
-Módulo completo de artistas.
+Una obra podrá clasificarse mediante:
+
+```
+Categoría
+     +
+Tipo de obra
+     +
+Estado de conservación
+```
 
 ---
 
-# Sprint 4 - Gestión de Obras
+## 9. Sprint 4 — Gestión de artistas
+
+**Duración:** 2 semanas
+**Prioridad:** 🔴 Crítica
+
+### Tabla principal
+
+`artists`
+
+### Tareas
+
+| Funcionalidad | Campo |
+|---|---|
+| Nombres | `first_name` |
+| Apellidos | `last_name` |
+| Nombre completo | `full_name` |
+| Fecha de nacimiento | `birth_date` |
+| Lugar de nacimiento | `birth_place` |
+| Fecha de fallecimiento | `death_date` |
+| Estado de fallecimiento | `is_deceased` |
+| Nacionalidad | `nationality` |
+| Biografía | `biography` |
+| Imagen | `profile_image` |
+| Sitio web | `website` |
+
+### Funcionalidades
+
+- Crear artistas.
+- Editar artistas.
+- Consultar información.
+- Eliminar artistas mediante soft delete.
+- Subir fotografía de perfil (subida reactiva con previsualización, mediante Livewire).
+- Buscar artistas (búsqueda en vivo con Livewire, sin recargar la página).
+- Consultar obras asociadas.
+
+### Resultado esperado
+
+```
+Artista
+   │
+   └── Obras asociadas
+```
+
+---
+
+## 10. Sprint 5 — Gestión de obras patrimoniales
 
 **Duración:** 3 semanas
-
 **Prioridad:** 🔴 Crítica
 
-## Objetivo
+### Objetivo
 
-Desarrollar el módulo principal del sistema.
+Desarrollar el módulo principal del sistema para registrar y administrar las obras de patrimonio cultural.
 
-### Tareas
+### Tabla principal
 
-| Tarea | Prioridad |
-|--------|-----------|
-| CRUD Obras | 🔴 |
-| Código único | 🔴 |
-| Ubicación geográfica | 🔴 |
-| Categoría | 🔴 |
-| Tipo de obra | 🔴 |
-| Estado de conservación | 🔴 |
-| Provincia/Cantón/Parroquia | 🔴 |
-| SEO | 🟠 |
-| Estado de publicación | 🟠 |
-| Validaciones | 🔴 |
-| Soft Delete | 🟠 |
+`artworks`
 
-### Entregable
+### Relaciones
 
-Sistema de gestión de obras terminado.
+```
+artworks
+   │
+   ├── categories
+   ├── artwork_types
+   ├── conservation_statuses
+   ├── provinces
+   ├── cantons
+   ├── parishes
+   ├── users
+   │
+   └── artwork_artist
+           │
+           └── artists
+```
+
+### Información de la obra
+
+| Grupo | Información |
+|---|---|
+| Identificación | Código, título, slug |
+| Descripción | Descripción corta y completa |
+| Historia | Contexto histórico |
+| Clasificación | Categoría y tipo |
+| Conservación | Estado de conservación |
+| Ubicación | Provincia, cantón, parroquia y dirección |
+| Autoría | Uno o varios artistas |
+| Características | Año, dimensiones y peso |
+| Valor | Valor estimado |
+| Accesibilidad | Notas de accesibilidad |
+| Geolocalización | Latitud y longitud |
+| Publicación | Estado, fecha y usuario que publicó |
+| SEO | Título y descripción SEO |
+
+### Flujo de publicación
+
+El campo `status` permitirá implementar:
+
+```
+borrador
+    ↓
+pendiente
+    ↓
+publicado
+    ↓
+archivado
+```
+
+Por ejemplo:
+
+```
+Gestor
+   ↓
+Crea obra
+   ↓
+Borrador
+   ↓
+Envía para revisión
+   ↓
+Pendiente
+   ↓
+Administrador
+   ↓
+Publicado
+```
+
+### Resultado esperado
+
+CRUD completo de obras mediante AdminLTE, implementado como componentes Livewire 4 (`⚡index`, `⚡create`, `⚡edit`) que permiten guardar borradores automáticamente, validar campos en vivo y cambiar el `status` de la obra sin recargar la página.
 
 ---
 
-# Sprint 5 - Multimedia
+## 11. Sprint 6 — Imágenes y geolocalización
 
 **Duración:** 2 semanas
-
 **Prioridad:** 🟠 Alta
 
-## Objetivo
+### Tabla
 
-Administrar imágenes, documentos y videos.
-
-### Tareas
-
-| Tarea | Prioridad |
-|--------|-----------|
-| Subir imágenes | 🟠 |
-| Imagen principal | 🟠 |
-| Orden de imágenes | 🟡 |
-| ALT de imágenes | 🟡 |
-| Gestión de documentos | 🟠 |
-| Contador de descargas | 🟡 |
-| Gestión de videos | 🟡 |
-| Miniaturas | 🟢 |
-
-### Entregable
-
-Sistema multimedia completo.
-
----
-
-# Sprint 6 - Relaciones y Contenido
-
-**Duración:** 2 semanas
-
-**Prioridad:** 🟠 Alta
-
-## Objetivo
-
-Relacionar las obras con el resto del contenido.
+`artwork_images`
 
 ### Tareas
 
-| Tarea | Prioridad |
-|--------|-----------|
-| Relación Obras-Artistas | 🟠 |
-| Tags | 🟡 |
-| Comentarios | 🟠 |
-| Moderación de comentarios | 🟡 |
-| Favoritos | 🟡 |
-| Calificaciones | 🟠 |
-| Promedio de valoraciones | 🟡 |
+| Funcionalidad | Descripción |
+|---|---|
+| Subir imágenes | Componente Livewire con subida múltiple y previsualización en vivo, asociadas a una obra |
+| Eliminar imágenes | Gestionar archivos de forma reactiva (sin recargar la galería) |
+| Imagen de portada | Definir imagen principal con selección instantánea |
+| Orden | Controlar presentación (reordenamiento reactivo tipo drag & drop con Livewire) |
+| Pie de imagen | Campo `caption` |
+| Texto alternativo | Campo `alt_text` |
+| Información técnica | Tamaño, dimensiones y MIME |
+| Hash | Identificación de imágenes |
+| Almacenamiento | Configurar Laravel Storage |
 
-### Entregable
+### Geolocalización
 
-Las obras tendrán interacción con los usuarios.
+Utilizar:
 
----
+- `artworks.latitude`
+- `artworks.longitude`
 
-# Sprint 7 - Fuentes y Restauraciones
+para mostrar la ubicación de la obra mediante un mapa.
 
-**Duración:** 2 semanas
+### Resultado esperado
 
-**Prioridad:** 🟡 Media
+```
+Obra
+ ├── Imagen de portada
+ ├── Imagen 2
+ ├── Imagen 3
+ └── Imagen 4
 
-## Objetivo
-
-Registrar el historial documental.
-
-### Tareas
-
-| Tarea | Prioridad |
-|--------|-----------|
-| CRUD Fuentes bibliográficas | 🟡 |
-| CRUD Restauraciones | 🟡 |
-| ISBN | 🟢 |
-| URL de referencia | 🟢 |
-| Organización restauradora | 🟢 |
-
-### Entregable
-
-Historial documental de cada obra.
+Obra
+ └── Ubicación en mapa
+```
 
 ---
 
-# Sprint 8 - Portal Público
+## 12. Sprint 7 — Portal público e interacción
 
 **Duración:** 2 semanas
-
 **Prioridad:** 🔴 Crítica
 
-## Objetivo
+### Objetivo
 
-Desarrollar la interfaz pública del sistema.
+Crear la interfaz pública donde los visitantes podrán consultar el patrimonio registrado.
 
-### Tareas
+### Portal público
 
-| Tarea | Prioridad |
-|--------|-----------|
-| Página Inicio | 🔴 |
-| Listado de obras | 🔴 |
-| Detalle de obra | 🔴 |
-| Buscador | 🔴 |
-| Filtros | 🟠 |
-| Paginación | 🟠 |
-| Responsive | 🔴 |
-| SEO básico | 🟠 |
-| Mapa de ubicación | 🟠 |
+El usuario podrá, mediante componentes Livewire 4 (Single-File Components) que actualizan la página sin recargarla:
 
-### Entregable
+- Consultar obras publicadas.
+- Consultar artistas.
+- Consultar provincias.
+- Ver información detallada de cada obra.
+- Visualizar imágenes (galería reactiva).
+- Consultar ubicación.
+- Buscar obras (búsqueda en vivo, `wire:model.live`).
+- Filtrar obras.
 
-Portal web público funcionando.
+### Filtros
 
----
+Implementados como un único componente Livewire de tipo página (`pages::obras.⚡index`), que reacciona a cada cambio sin recargar el listado:
 
-# Sprint 9 - Estadísticas y Auditoría
+```
+Buscar (componente Livewire reactivo)
+   │
+   ├── Título
+   ├── Provincia
+   ├── Cantón
+   ├── Categoría
+   ├── Tipo de obra
+   └── Estado de conservación
+```
 
-**Duración:** 2 semanas
+### Comentarios
 
-**Prioridad:** 🟡 Media
+**Tabla:** `comments`
 
-## Objetivo
+Funcionalidades (componente Livewire `⚡comments`, embebido en la página de detalle de la obra):
 
-Generar estadísticas y auditoría.
+- Crear comentarios (envío sin recarga de página).
+- Editar comentarios propios en línea.
+- Eliminar comentarios propios con confirmación reactiva.
+- Responder comentarios (hilos anidados renderizados dinámicamente).
+- Moderar comentarios (panel administrativo con Livewire).
 
-### Tareas
+### Calificaciones
 
-| Tarea | Prioridad |
-|--------|-----------|
-| Dashboard | 🟡 |
-| Estadísticas de visitas | 🟡 |
-| Obras más vistas | 🟡 |
-| Usuarios registrados | 🟢 |
-| Auditoría del sistema | 🟡 |
-| Registro de acciones | 🟡 |
+**Tabla:** `ratings`
 
-### Entregable
+El usuario podrá asignar una valoración de 1 a 5 estrellas mediante un componente Livewire de estrellas interactivo, que actualiza `average_rating` de la obra en tiempo real sin recargar la página.
 
-Panel administrativo con métricas.
+La restricción:
 
----
+```
+UNIQUE(user_id, artwork_id)
+```
 
-# Sprint 10 - Optimización y Despliegue
-
-**Duración:** 2 semanas
-
-**Prioridad:** 🟢 Baja
-
-## Objetivo
-
-Preparar el sistema para producción.
-
-### Tareas
-
-| Tarea | Prioridad |
-|--------|-----------|
-| Optimización SQL | 🟢 |
-| Caché | 🟢 |
-| Optimización de consultas | 🟢 |
-| Pruebas Unitarias | 🟡 |
-| Pruebas Funcionales | 🟡 |
-| Manual Técnico | 🟡 |
-| Manual de Usuario | 🟡 |
-| Despliegue en servidor | 🟢 |
-| Configuración SSL | 🟢 |
-| Backups | 🟢 |
-
-### Entregable
-
-Sistema listo para producción.
+garantizará que cada usuario tenga una única valoración por obra.
 
 ---
 
-# Cronograma General
+## 13. Sprint 8 — Pruebas y entrega del MVP
 
-| Sprint | Nombre | Duración | Prioridad |
-|---------|---------|-----------|-----------|
-| Sprint 0 | Configuración del proyecto | 1 semana | 🔴 Crítica |
-| Sprint 1 | Usuarios y seguridad | 2 semanas | 🔴 Crítica |
-| Sprint 2 | Catálogos generales | 2 semanas | 🔴 Crítica |
-| Sprint 3 | Gestión de artistas | 2 semanas | 🟠 Alta |
-| Sprint 4 | Gestión de obras | 3 semanas | 🔴 Crítica |
-| Sprint 5 | Multimedia | 2 semanas | 🟠 Alta |
-| Sprint 6 | Relaciones y contenido | 2 semanas | 🟠 Alta |
-| Sprint 7 | Fuentes y restauraciones | 2 semanas | 🟡 Media |
-| Sprint 8 | Portal público | 2 semanas | 🔴 Crítica |
-| Sprint 9 | Estadísticas y auditoría | 2 semanas | 🟡 Media |
-| Sprint 10 | Optimización y despliegue | 2 semanas | 🟢 Baja |
+**Duración:** 1 semana
+**Prioridad:** 🔴 Crítica
+
+### Pruebas de autenticación
+
+- [ ] Login correcto.
+- [ ] Login con credenciales incorrectas.
+- [ ] Usuario inactivo.
+- [ ] Logout.
+- [ ] Recuperación de contraseña.
+- [ ] Control de sesión.
+
+### Pruebas de autorización
+
+- [ ] Administrador.
+- [ ] Gestor.
+- [ ] Moderador.
+- [ ] Usuario.
+- [ ] Acceso no autorizado a módulos.
+
+### Pruebas de obras
+
+- [ ] Crear obra.
+- [ ] Editar obra.
+- [ ] Consultar obra.
+- [ ] Publicar obra.
+- [ ] Archivar obra.
+- [ ] Buscar obra.
+- [ ] Filtrar obra.
+
+### Pruebas de ubicación
+
+- [ ] Provincia.
+- [ ] Cantón.
+- [ ] Parroquia.
+- [ ] Ubicación geográfica.
+
+### Pruebas de interacción
+
+- [ ] Crear comentario.
+- [ ] Editar comentario.
+- [ ] Eliminar comentario.
+- [ ] Calificar obra.
+- [ ] Modificar calificación.
+- [ ] Impedir calificaciones duplicadas.
+
+### Pruebas de componentes Livewire
+
+- [ ] Renderizado correcto de componentes SFC (`⚡`).
+- [ ] Validación en vivo en formularios reactivos.
+- [ ] Búsqueda y filtros sin recarga de página.
+- [ ] Subida y previsualización de imágenes.
+- [ ] Actualización de calificaciones en tiempo real.
+
+### Documentación
+
+- [ ] Manual de instalación.
+- [ ] Manual de usuario.
+- [ ] Manual de administrador.
+- [ ] Documentación de la BD.
+- [ ] Documentación de pruebas.
+- [ ] Documentación del MVP.
 
 ---
 
-# MVP (Producto Mínimo Viable)
+## 14. Cronograma general
 
-Las funcionalidades que deben estar listas para considerar el sistema funcional son:
+| Sprint | Módulo | Duración | Prioridad |
+|---|---|---|---|
+| 0 | Preparación Laravel + AdminLTE | 1 semana | 🔴 |
+| 1 | Autenticación, autorización y usuarios | 2 semanas | 🔴 |
+| 2 | Provincias, cantones y parroquias | 2 semanas | 🔴 |
+| 3 | Catálogos del patrimonio | 2 semanas | 🔴 |
+| 4 | Artistas | 2 semanas | 🔴 |
+| 5 | Obras patrimoniales | 3 semanas | 🔴 |
+| 6 | Imágenes + geolocalización | 2 semanas | 🟠 |
+| 7 | Portal público + comentarios + ratings | 2 semanas | 🔴 |
+| 8 | Pruebas + documentación + entrega | 1 semana | 🔴 |
+| **Total** | **MVP** | **15 semanas** | |
 
-- 🔴 Configuración del proyecto.
-- 🔴 Sistema de autenticación.
-- 🔴 Gestión de usuarios y roles.
-- 🔴 Catálogos (provincias, cantones, parroquias, categorías, tipos y estados).
-- 🔴 Gestión de artistas.
-- 🔴 Gestión de obras.
-- 🟠 Carga de imágenes.
-- 🔴 Portal público.
-- 🔴 Buscador de obras.
-- 🔴 Geolocalización de obras.
-- 🟠 Comentarios.
-- 🟠 Calificaciones.
+---
 
-Una vez completados estos módulos, el sistema podrá utilizarse de forma operativa. Las funcionalidades restantes pueden incorporarse progresivamente en versiones posteriores.
+## 15. Funcionalidades de la versión 2
+
+Una vez terminado el MVP, se podrán implementar las tablas restantes:
+
+| Funcionalidad | Tabla |
+|---|---|
+| Etiquetas | `tags`, `artwork_tag` |
+| Favoritos | `favorites` |
+| Videos | `artwork_videos` |
+| Documentos | `artwork_documents` |
+| Fuentes bibliográficas | `artwork_sources` |
+| Restauraciones | `restoration_events` |
+| Estadísticas de visitas | `artwork_views` |
+| Auditoría | `audit_logs` |
+
+También se podrán incorporar posteriormente:
+
+- Notificaciones.
+- Estadísticas avanzadas.
+- SEO avanzado.
+- API REST.
+- Aplicación móvil.
+- Sistema avanzado de permisos.
+- Reportes.
+- Exportación de información.
+
+---
+
+## 16. Resultado final del MVP
+
+Al finalizar las 15 semanas, el sistema deberá permitir:
+
+```
+                    PLATAFORMA
+                        │
+          ┌─────────────┴─────────────┐
+          │                           │
+    PANEL ADMINISTRATIVO          PORTAL PÚBLICO
+       AdminLTE                       │
+          │                           │
+    ┌─────┴─────┐              ┌──────┴──────┐
+    │           │              │             │
+ Usuarios    Catálogos       Buscar       Consultar
+    │           │              │             │
+    │        Geografía        Filtrar       Obras
+    │           │              │             │
+    └───────────┴──────────────┴─────────────┘
+                         │
+                       Obras
+                         │
+          ┌──────────────┼──────────────┐
+          │              │              │
+       Artistas       Imágenes      Ubicación
+          │              │              │
+          └──────────────┼──────────────┘
+                         │
+                  Interacción
+                    ┌────┴────┐
+                    │         │
+                Comentarios  Ratings
+                    │         │
+                    └────┬────┘
+                         │
+              Componentes Livewire 4
+              (reactivos, sin recarga)
+```
+
+---
+
+*Este sería el plan base que utilizaría para desarrollar tu BD actual en Laravel, sin modificar la estructura que ya tienes y dejando las funcionalidades secundarias para una segunda versión.*
