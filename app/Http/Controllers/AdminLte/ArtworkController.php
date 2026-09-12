@@ -13,6 +13,7 @@ use App\Models\Province;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ArtworkController extends Controller
@@ -43,6 +44,8 @@ class ArtworkController extends Controller
     {
         $this->authorizeManage();
 
+        $this->normalizeCoordinateInputs($request);
+
         $data = $request->validate([
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'conservation_status_id' => ['nullable', 'integer', 'exists:conservation_statuses,id'],
@@ -57,7 +60,12 @@ class ArtworkController extends Controller
             'description' => ['required', 'string'],
             'short_description' => ['nullable', 'string'],
             'language' => ['nullable', 'string', 'max:10'],
+            'address' => ['nullable', 'string', 'max:255'],
             'creation_year' => ['nullable', 'integer', 'min:1000', 'max:2100'],
+            'latitude' => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'images' => ['nullable', 'array'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'status' => ['nullable', 'in:borrador,pendiente,publicado,archivado'],
             'is_featured' => ['nullable', 'boolean'],
         ]);
@@ -76,13 +84,20 @@ class ArtworkController extends Controller
             'short_description' => $data['short_description'] ?? null,
             'description' => $data['description'],
             'language' => $data['language'] ?? 'es',
+            'address' => $data['address'] ?? null,
             'creation_year' => $data['creation_year'] ?? null,
+            'latitude' => $data['latitude'] ?? null,
+            'longitude' => $data['longitude'] ?? null,
             'status' => $data['status'] ?? 'borrador',
             'is_featured' => $data['is_featured'] ?? false,
         ]);
 
         if (! empty($data['artist_ids'])) {
             $artwork->artists()->sync($data['artist_ids']);
+        }
+
+        if (! empty($data['images'])) {
+            $this->storeArtworkImages($artwork, $data['images']);
         }
 
         return redirect()->route('adminlte.artworks.index')->with('status', 'Obra creada correctamente.');
@@ -107,6 +122,8 @@ class ArtworkController extends Controller
     {
         $this->authorizeManage();
 
+        $this->normalizeCoordinateInputs($request);
+
         $data = $request->validate([
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'conservation_status_id' => ['nullable', 'integer', 'exists:conservation_statuses,id'],
@@ -121,7 +138,12 @@ class ArtworkController extends Controller
             'description' => ['required', 'string'],
             'short_description' => ['nullable', 'string'],
             'language' => ['nullable', 'string', 'max:10'],
+            'address' => ['nullable', 'string', 'max:255'],
             'creation_year' => ['nullable', 'integer', 'min:1000', 'max:2100'],
+            'latitude' => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'images' => ['nullable', 'array'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'status' => ['nullable', 'in:borrador,pendiente,publicado,archivado'],
             'is_featured' => ['nullable', 'boolean'],
         ]);
@@ -140,7 +162,10 @@ class ArtworkController extends Controller
             'short_description' => $data['short_description'] ?? null,
             'description' => $data['description'],
             'language' => $data['language'] ?? 'es',
+            'address' => $data['address'] ?? null,
             'creation_year' => $data['creation_year'] ?? null,
+            'latitude' => $data['latitude'] ?? null,
+            'longitude' => $data['longitude'] ?? null,
             'status' => $data['status'] ?? 'borrador',
             'is_featured' => $data['is_featured'] ?? false,
         ]);
@@ -149,6 +174,17 @@ class ArtworkController extends Controller
             $artwork->artists()->sync($data['artist_ids']);
         } else {
             $artwork->artists()->detach();
+        }
+
+        if ($request->hasFile('images')) {
+            foreach ($artwork->images as $image) {
+                if (Storage::disk('public')->exists($image->image_path)) {
+                    Storage::disk('public')->delete($image->image_path);
+                }
+                $image->delete();
+            }
+
+            $this->storeArtworkImages($artwork, $data['images']);
         }
 
         return redirect()->route('adminlte.artworks.index')->with('status', 'Obra actualizada correctamente.');
@@ -161,6 +197,37 @@ class ArtworkController extends Controller
         $artwork->delete();
 
         return redirect()->route('adminlte.artworks.index')->with('status', 'Obra eliminada correctamente.');
+    }
+
+    private function storeArtworkImages(Artwork $artwork, array $images): void
+    {
+        foreach ($images as $index => $file) {
+            $path = $file->store('artworks', 'public');
+
+            $artwork->images()->create([
+                'photographer' => auth()->user()?->name,
+                'image_path' => $path,
+                'caption' => $artwork->title,
+                'alt_text' => $artwork->title,
+                'file_size' => $file->getSize(),
+                'width' => null,
+                'height' => null,
+                'mime_type' => $file->getMimeType(),
+                'image_hash' => hash_file('sha256', $file->getRealPath()),
+                'display_order' => $index + 1,
+                'is_cover' => $index === 0,
+            ]);
+        }
+    }
+
+    private function normalizeCoordinateInputs(Request $request): void
+    {
+        foreach (['latitude', 'longitude'] as $field) {
+            if ($request->filled($field)) {
+                $value = trim((string) $request->input($field));
+                $request->merge([$field => str_replace(',', '.', $value)]);
+            }
+        }
     }
 
     private function authorizeManage(): void

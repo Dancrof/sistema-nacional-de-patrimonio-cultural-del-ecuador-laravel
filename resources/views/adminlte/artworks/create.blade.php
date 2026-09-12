@@ -20,7 +20,7 @@
 
 @section('content')
     <x-adminlte-card icon="bi bi-palette" title="Nueva obra">
-        <form method="POST" action="{{ route('adminlte.artworks.store') }}">
+        <form method="POST" action="{{ route('adminlte.artworks.store') }}" enctype="multipart/form-data">
             @csrf
 
             <div class="row g-3">
@@ -82,6 +82,17 @@
                     <x-adminlte-input name="creation_year" type="number" min="1000" max="2100" label="Año de creación" value="{{ old('creation_year') }}" />
                 </div>
                 <div class="col-md-6">
+                    <x-adminlte-input name="address" label="Dirección" value="{{ old('address') }}" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="latitude">Latitud</label>
+                    <input type="text" name="latitude" id="latitude" class="form-control" inputmode="decimal" pattern="^-?(?:90(?:\.0+)?|[0-8]?\d(?:\.\d+)?)$" value="{{ old('latitude') }}" data-coordinate-field>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="longitude">Longitud</label>
+                    <input type="text" name="longitude" id="longitude" class="form-control" inputmode="decimal" pattern="^-?(?:180(?:\.0+)?|(?:1[0-7]\d|\d{1,2})(?:\.\d+)?)$" value="{{ old('longitude') }}" data-coordinate-field>
+                </div>
+                <div class="col-md-6">
                     <label class="form-label" for="status">Estado</label>
                     <select name="status" id="status" class="form-select">
                         <option value="borrador" @selected(old('status') === 'borrador')>Borrador</option>
@@ -89,6 +100,14 @@
                         <option value="publicado" @selected(old('status', 'publicado') === 'publicado')>Publicado</option>
                         <option value="archivado" @selected(old('status') === 'archivado')>Archivado</option>
                     </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="images">Imágenes</label>
+                    <div class="border rounded p-3 bg-light">
+                        <input type="file" name="images[]" id="images" class="form-control" multiple accept="image/*">
+                        <small class="text-muted d-block mt-2">Puedes seleccionar varias imágenes a la vez.</small>
+                        <div id="images-preview" class="d-flex flex-wrap gap-2 mt-3"></div>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Destacada</label>
@@ -137,13 +156,13 @@
             const cantonSelect = document.getElementById('canton_id');
             const parishSelect = document.getElementById('parish_id');
 
-            const fetchByProvince = (provinceId, target, url, placeholder) => {
-                if (!provinceId) {
+            const fetchByFilter = (value, target, url, paramName, placeholder) => {
+                if (!value) {
                     target.innerHTML = '<option value="">' + placeholder + '</option>';
                     return;
                 }
 
-                fetch(url + '?province_id=' + provinceId)
+                fetch(url + '?' + encodeURIComponent(paramName) + '=' + encodeURIComponent(value))
                     .then(response => response.json())
                     .then(data => {
                         target.innerHTML = '<option value="">' + placeholder + '</option>';
@@ -157,13 +176,50 @@
             };
 
             provinceSelect.addEventListener('change', function () {
-                fetchByProvince(this.value, cantonSelect, '{{ route('adminlte.cantons.index') }}', 'Seleccione un cantón');
+                fetchByFilter(this.value, cantonSelect, '{{ route('adminlte.cantons.index') }}', 'province_id', 'Seleccione un cantón');
                 parishSelect.innerHTML = '<option value="">Seleccione una parroquia</option>';
             });
 
             cantonSelect.addEventListener('change', function () {
-                fetchByProvince(this.value, parishSelect, '{{ route('adminlte.parishes.index') }}', 'Seleccione una parroquia');
+                fetchByFilter(this.value, parishSelect, '{{ route('adminlte.parishes.index') }}', 'canton_id', 'Seleccione una parroquia');
             });
+
+            document.querySelectorAll('[data-coordinate-field]').forEach(function (input) {
+                const normalizeCoordinate = function () {
+                    input.value = input.value.trim().replace(/,/g, '.');
+                };
+
+                input.addEventListener('blur', normalizeCoordinate);
+                input.addEventListener('change', normalizeCoordinate);
+            });
+
+            const imageInput = document.getElementById('images');
+            const imagePreview = document.getElementById('images-preview');
+
+            if (imageInput && imagePreview) {
+                const renderImagePreview = (files) => {
+                    imagePreview.innerHTML = '';
+
+                    if (!files.length) {
+                        return;
+                    }
+
+                    Array.from(files).forEach(file => {
+                        if (!file.type.startsWith('image/')) {
+                            return;
+                        }
+
+                        const item = document.createElement('div');
+                        item.className = 'border rounded bg-white px-2 py-1 text-xs text-secondary';
+                        item.textContent = file.name;
+                        imagePreview.appendChild(item);
+                    });
+                };
+
+                imageInput.addEventListener('change', function (event) {
+                    renderImagePreview(event.target.files);
+                });
+            }
         });
     </script>
 @endpush

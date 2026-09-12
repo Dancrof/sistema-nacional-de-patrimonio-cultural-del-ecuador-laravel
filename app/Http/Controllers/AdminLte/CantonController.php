@@ -12,9 +12,20 @@ use Illuminate\Support\Str;
 
 class CantonController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View|\Illuminate\Http\JsonResponse
     {
         $this->authorizeManage();
+
+        if ($request->filled('province_id')) {
+            return response()->json(
+                Canton::query()
+                    ->where('province_id', $request->integer('province_id'))
+                    ->orderBy('name')
+                    ->get(['id', 'name'])
+                    ->map(fn ($canton) => ['id' => $canton->id, 'name' => $canton->name])
+                    ->values()
+            );
+        }
 
         $cantons = Canton::with('province')->latest()->paginate(15);
 

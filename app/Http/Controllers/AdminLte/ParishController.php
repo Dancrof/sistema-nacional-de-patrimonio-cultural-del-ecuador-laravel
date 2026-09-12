@@ -12,9 +12,20 @@ use Illuminate\Support\Str;
 
 class ParishController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View|\Illuminate\Http\JsonResponse
     {
         $this->authorizeManage();
+
+        if ($request->filled('canton_id')) {
+            return response()->json(
+                Parish::query()
+                    ->where('canton_id', $request->integer('canton_id'))
+                    ->orderBy('name')
+                    ->get(['id', 'name'])
+                    ->map(fn ($parish) => ['id' => $parish->id, 'name' => $parish->name])
+                    ->values()
+            );
+        }
 
         $parishes = Parish::with('canton.province')->latest()->paginate(15);
 

@@ -20,7 +20,7 @@
 
 @section('content')
     <x-adminlte-card icon="bi bi-pencil-square" title="Editar obra">
-        <form method="POST" action="{{ route('adminlte.artworks.update', $artwork) }}">
+        <form method="POST" action="{{ route('adminlte.artworks.update', $artwork) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -85,12 +85,31 @@
                     <x-adminlte-input name="creation_year" type="number" min="1000" max="2100" label="Año de creación" :value="$artwork->creation_year" />
                 </div>
                 <div class="col-md-6">
+                    <x-adminlte-input name="address" label="Dirección" :value="$artwork->address" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="latitude">Latitud</label>
+                    <input type="text" name="latitude" id="latitude" class="form-control" inputmode="decimal" pattern="^-?(?:90(?:\.0+)?|[0-8]?\d(?:\.\d+)?)$" value="{{ old('latitude', $artwork->latitude) }}" data-coordinate-field>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="longitude">Longitud</label>
+                    <input type="text" name="longitude" id="longitude" class="form-control" inputmode="decimal" pattern="^-?(?:180(?:\.0+)?|(?:1[0-7]\d|\d{1,2})(?:\.\d+)?)$" value="{{ old('longitude', $artwork->longitude) }}" data-coordinate-field>
+                </div>
+                <div class="col-md-6">
                     <label class="form-label" for="status">Estado</label>
                     <select name="status" id="status" class="form-select">
                         @foreach (['borrador', 'pendiente', 'publicado', 'archivado'] as $state)
                             <option value="{{ $state }}" @selected(old('status', $artwork->status) === $state)>{{ ucfirst($state) }}</option>
                         @endforeach
                     </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="images">Imágenes</label>
+                    <div class="border rounded p-3 bg-light">
+                        <input type="file" name="images[]" id="images" class="form-control" multiple accept="image/*">
+                        <small class="text-muted d-block mt-2">Puedes seleccionar varias imágenes a la vez.</small>
+                        <div id="images-preview" class="d-flex flex-wrap gap-2 mt-3"></div>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Destacada</label>
@@ -131,3 +150,37 @@
         </form>
     </x-adminlte-card>
 @stop
+
+@push('js')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const imageInput = document.getElementById('images');
+            const imagePreview = document.getElementById('images-preview');
+
+            if (imageInput && imagePreview) {
+                const renderImagePreview = (files) => {
+                    imagePreview.innerHTML = '';
+
+                    if (!files.length) {
+                        return;
+                    }
+
+                    Array.from(files).forEach(file => {
+                        if (!file.type.startsWith('image/')) {
+                            return;
+                        }
+
+                        const item = document.createElement('div');
+                        item.className = 'border rounded bg-white px-2 py-1 text-xs text-secondary';
+                        item.textContent = file.name;
+                        imagePreview.appendChild(item);
+                    });
+                };
+
+                imageInput.addEventListener('change', function (event) {
+                    renderImagePreview(event.target.files);
+                });
+            }
+        });
+    </script>
+@endpush

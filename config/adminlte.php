@@ -17,7 +17,7 @@ return [
     |
     */
 
-    'title' => 'Patrimonio Ecuador',
+    'title' => 'Sistema de Gestión del Patrimonio Cultural del Ecuador',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'logo' => 'Patrimonio Ecuador',
+    'logo' => 'SIGPCE',
     'logo_img' => '/storage/logos/Escudo_de_la_Republica_del_Ecuador.png',
     'logo_img_class' => 'brand-image opacity-75 shadow',
     'logo_img_alt' => 'Escudo_de_la_Republica_del_Ecuador.png',

@@ -12,6 +12,8 @@ use App\Models\Province;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Testing\File;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ArtworkManagementTest extends TestCase
@@ -47,6 +49,8 @@ class ArtworkManagementTest extends TestCase
             'biography' => 'Artista ecuatoriano.',
         ]);
 
+        Storage::fake('public');
+
         $response = $this->actingAs($admin)
             ->post(route('adminlte.artworks.store'), [
                 'category_id' => $category->id,
@@ -62,6 +66,12 @@ class ArtworkManagementTest extends TestCase
                 'creation_year' => 1950,
                 'status' => 'publicado',
                 'is_featured' => true,
+                'latitude' => '-0,1807',
+                'longitude' => '-78,4678',
+                'images' => [
+                    File::image('front.jpg'),
+                    File::image('detail.jpg'),
+                ],
             ]);
 
         $response->assertRedirect(route('adminlte.artworks.index'));
@@ -70,6 +80,10 @@ class ArtworkManagementTest extends TestCase
             'title' => 'La noche de Quito',
             'slug' => 'la-noche-de-quito',
             'status' => 'publicado',
+            'latitude' => '-0.1807',
+            'longitude' => '-78.4678',
         ]);
+        $this->assertDatabaseHas('artwork_images', ['artwork_id' => 1, 'is_cover' => true]);
+        $this->assertDatabaseCount('artwork_images', 2);
     }
 }

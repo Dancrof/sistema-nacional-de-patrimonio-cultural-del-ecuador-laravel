@@ -41,7 +41,7 @@
                             <div class="mt-4 grid gap-3 sm:grid-cols-2">
                                 @foreach ($artwork->images as $image)
                                     <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
-                                        <img src="{{ asset($image->image_path) }}" alt="{{ $image->alt_text ?? $image->caption ?? $artwork->title }}" class="h-48 w-full object-cover">
+                                        <img src="{{ Storage::url($image->image_path) }}" alt="{{ $image->alt_text ?? $image->caption ?? $artwork->title }}" class="h-48 w-full object-cover">
                                         @if ($image->caption)
                                             <p class="px-3 py-2 text-sm text-slate-600">{{ $image->caption }}</p>
                                         @endif
