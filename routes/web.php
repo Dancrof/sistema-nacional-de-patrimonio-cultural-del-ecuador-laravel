@@ -3,9 +3,12 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::redirect('/', '/obras');
+
+Route::get('/obras', [\App\Http\Controllers\PublicArtworkController::class, 'index'])->name('public.artworks.index');
+Route::get('/obras/{slug}', [\App\Http\Controllers\PublicArtworkController::class, 'show'])->name('public.artworks.show');
+Route::post('/obras/{slug}/comments', [\App\Http\Controllers\PublicArtworkController::class, 'storeComment'])->name('public.artworks.comments.store');
+Route::post('/obras/{slug}/ratings', [\App\Http\Controllers\PublicArtworkController::class, 'storeRating'])->name('public.artworks.ratings.store');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -75,6 +78,22 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('adminlte.')->group(fu
     Route::get('parishes/{parish}/edit', [\App\Http\Controllers\AdminLte\ParishController::class, 'edit'])->name('parishes.edit');
     Route::put('parishes/{parish}', [\App\Http\Controllers\AdminLte\ParishController::class, 'update'])->name('parishes.update');
     Route::delete('parishes/{parish}', [\App\Http\Controllers\AdminLte\ParishController::class, 'destroy'])->name('parishes.destroy');
+
+    // [adminlte:artists]
+    Route::get('artists', [\App\Http\Controllers\AdminLte\ArtistController::class, 'index'])->name('artists.index');
+    Route::get('artists/create', [\App\Http\Controllers\AdminLte\ArtistController::class, 'create'])->name('artists.create');
+    Route::post('artists', [\App\Http\Controllers\AdminLte\ArtistController::class, 'store'])->name('artists.store');
+    Route::get('artists/{artist}/edit', [\App\Http\Controllers\AdminLte\ArtistController::class, 'edit'])->name('artists.edit');
+    Route::put('artists/{artist}', [\App\Http\Controllers\AdminLte\ArtistController::class, 'update'])->name('artists.update');
+    Route::delete('artists/{artist}', [\App\Http\Controllers\AdminLte\ArtistController::class, 'destroy'])->name('artists.destroy');
+
+    // [adminlte:artworks]
+    Route::get('artworks', [\App\Http\Controllers\AdminLte\ArtworkController::class, 'index'])->name('artworks.index');
+    Route::get('artworks/create', [\App\Http\Controllers\AdminLte\ArtworkController::class, 'create'])->name('artworks.create');
+    Route::post('artworks', [\App\Http\Controllers\AdminLte\ArtworkController::class, 'store'])->name('artworks.store');
+    Route::get('artworks/{artwork}/edit', [\App\Http\Controllers\AdminLte\ArtworkController::class, 'edit'])->name('artworks.edit');
+    Route::put('artworks/{artwork}', [\App\Http\Controllers\AdminLte\ArtworkController::class, 'update'])->name('artworks.update');
+    Route::delete('artworks/{artwork}', [\App\Http\Controllers\AdminLte\ArtworkController::class, 'destroy'])->name('artworks.destroy');
 
     // [adminlte:users]
     Route::get('users', [\App\Http\Controllers\AdminLte\UserController::class, 'index'])->name('users.index');
